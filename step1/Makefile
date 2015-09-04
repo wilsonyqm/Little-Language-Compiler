@@ -1,5 +1,5 @@
 LIB_ANTLR := lib/antlr.jar
-ANTLR_SCRIPT := Micro.g4
+ANTLR_SCRIPT := Microlexer.g4
 
 all: group compiler
 
@@ -12,6 +12,12 @@ compiler:
 	rm -rf classes
 	mkdir classes
 	javac -cp $(LIB_ANTLR) -d classes src/*.java build/*.java
+run:
+	java -cp lib/antlr.jar:classes/ Micro input/sqrt.micro > output/sqrt.micro.output
+	java -cp lib/antlr.jar:classes/ Micro input/nested.micro > output/nested.micro.output
+	java -cp lib/antlr.jar:classes/ Micro input/loopbreak.micro > output/loopbreak.micro.output
+	java -cp lib/antlr.jar:classes/ Micro input/loop.micro > output/loop.micro.output
+	java -cp lib/antlr.jar:classes/ Micro input/fibonacci.micro > output/fibonacci.micro.output
 clean:
 	rm -rf classes build
 
