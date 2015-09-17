@@ -2,7 +2,7 @@ LIB_ANTLR := lib/antlr.jar
 ANTLR_SCRIPT := Micro.g4
 SEQ:= $(shell seq 1 22)
 
-all: group compiler run diff
+all: group compiler
 
 group:
 	@echo "Ziheng Liu, Qiaomu Yao"
