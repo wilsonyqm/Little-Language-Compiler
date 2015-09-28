@@ -1,18 +1,22 @@
 import java.util.*;
 public class SymbolTableTree{
-	private SymbolTable root;
-	private SymbolTable table;
-	private int blocknum;
-	
+	public SymbolTable root;
+	public SymbolTable currscope;
+	public int blocknum;
+
 	
 	public SymbolTableTree(){
 		this.root = new SymbolTable("GLOBAL");
-		this.table = root;
+		this.currscope= root;
+		this.blocknum = 0;
 	}
-	
-	public addFunctionNode(){
+	public void enterscope() {
+		currscope = currscope.children.get(currscope.children.size() - 1);
 	}
-	
-	public addBlockNode(){
+	public void exitscope() {
+		currscope = currscope.parent;
+	}
+	public void printAll() {
+		System.out.println("ALL");
 	}
 }

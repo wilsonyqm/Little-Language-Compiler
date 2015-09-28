@@ -1,5 +1,7 @@
 import org.antlr.v4.runtime.*;
 import java.io.*;
+import org.antlr.v4.runtime.tree.*;
+
 
 public class Micro {
 		public static void main(String[] args) throws Exception {
@@ -13,8 +15,16 @@ public class Micro {
 			
 				ANTLRErrorStrategy es = new CustomErrorStrategy();
 				parser.setErrorHandler(es);
-				
-					
+				try{
+				ParseTree tree = parser.program();
+				ParseTreeWalker walker = new ParseTreeWalker();
+				MicroSymbolListener listener = new MicroSymbolListener();
+				walker.walk(listener, tree);
+				System.out.println("Finished");
+				}
+				catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
 			}	
 					
 	}	

@@ -14,7 +14,14 @@ compiler:
 	rm -rf classes
 	mkdir classes
 	javac -cp $(LIB_ANTLR) -d classes src/*.java build/*.java
-	
+run2:
+	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test1.micro;\
+	for i in $(SEQ);\
+	do \
+	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test$$i.micro;\
+	done;
+
+
 run:
 	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test1.micro > testcases/output/test1.micro.output
 	for i in $(SEQ);\

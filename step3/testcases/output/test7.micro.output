@@ -1,0 +1,2 @@
+STRINGinput:="Please input an integer number: ";STRINGspace:=" ";STRINGeol:="\n";INTi,result;
+Finished
