@@ -1,6 +1,7 @@
 LIB_ANTLR := lib/antlr.jar
 ANTLR_SCRIPT := Micro.g4
-SEQ:= $(shell seq 5 22)
+SEQ1:= $(shell seq 5 9)
+SEQ2:= $(shell seq 18 22)
 
 all: group compiler
 
@@ -14,26 +15,36 @@ compiler:
 	rm -rf classes
 	mkdir classes
 	javac -cp $(LIB_ANTLR) -d classes src/*.java build/*.java
-run2:
-	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test1.micro;\
-	for i in $(SEQ);\
-	do \
-	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test$$i.micro;\
-	done;
 
 
 run:
 	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test1.micro > testcases/output/test1.micro.output
-	for i in $(SEQ);\
+	for i in $(SEQ1);\
+	do \
+	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test$$i.micro > testcases/output/test$$i.micro.output;\
+	done;
+	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test11.micro > testcases/output/test11.micro.output
+	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test13.micro > testcases/output/test13.micro.output
+	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test14.micro > testcases/output/test14.micro.output
+	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test16.micro > testcases/output/test16.micro.output
+	for i in $(SEQ2);\
 	do \
 	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test$$i.micro > testcases/output/test$$i.micro.output;\
 	done;
 
 diff:
-	diff -a -b testcases/output/test1.micro.output testcases/output/test1.out >> testcases/result.txt;
-	for i in $(SEQ);\
+	diff -a -b -B testcases/output/test1.micro.output testcases/output/test1.out 
+	diff -a -b -B testcases/output/test11.micro.output testcases/output/test11.out 
+	diff -a -b -B testcases/output/test13.micro.output testcases/output/test13.out 
+	diff -a -b -B testcases/output/test14.micro.output testcases/output/test14.out 
+	diff -a -b -B testcases/output/test16.micro.output testcases/output/test16.out 
+	for i in $(SEQ1);\
 	do \
-	diff -a -b testcases/output/test$$i.micro.output testcases/output/test$$i.out >>testcases/result.txt;\
+	diff -a -b -B testcases/output/test$$i.micro.output testcases/output/test$$i.out;\
+	done;
+	for i in $(SEQ2);\
+	do \
+	diff -a -b -B testcases/output/test$$i.micro.output testcases/output/test$$i.out;\
 	done;
 
 clean:

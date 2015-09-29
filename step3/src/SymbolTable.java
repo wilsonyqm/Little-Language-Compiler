@@ -10,14 +10,9 @@ public class SymbolTable{
 		this.parent = null;
 		this.children = new ArrayList<SymbolTable>();
 		this.table = new LinkedHashMap<String,Symbol>();
+
 	}
 	
-	// public SymbolTable(String scope, SymbolTable parent){
-	// 	this.scope = scope;
-	// 	this.parent = parent;
-	// 	this.children = new ArrayList<SymbolTable>();
-	// 	this.table = new LinkedHashMap<String,Symbol>();
-	// }
 	
 	public SymbolTable getParent(){
 		return this.parent;
@@ -33,6 +28,8 @@ public class SymbolTable{
 	
 	public void addEntry(Symbol entry) throws IllegalArgumentException{
 		String name = entry.getName();
+		String type = entry.getType();
+		String value= entry.getValue();
 		if(table.containsKey(name)){
 			throw new IllegalArgumentException("DECLARATION ERROR "+name);
 		}
@@ -41,8 +38,10 @@ public class SymbolTable{
 			if (shadowCheck(this.parent,name)){
 				System.out.println("SHADOW WARNING "+name);
 			}
-			//System.out.println("HASH"+name);
-			table.put(name,entry);
+			
+			table.put(name,entry);	
+			
+			
 		}
 	}
 	
@@ -55,6 +54,22 @@ public class SymbolTable{
 			s = s.getParent();
 		}
 		return b;
+	}
+	
+	public void printTable(){
+		System.out.println("Symbol table "+this.scope);
+		Iterator<Symbol> symbols = table.values().iterator();
+		while(symbols.hasNext()){
+			Symbol currentSymbol = symbols.next();
+			String name = currentSymbol.getName();
+			String type = currentSymbol.getType();
+			String value = currentSymbol.getValue();
+			
+			if(type == "STRING")
+				System.out.println("name " +name+ " type " +type+" value "+value);
+			else
+				System.out.println("name "+name+" type "+type);
+		}
 	}
 	
 }

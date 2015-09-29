@@ -1,2 +1,12 @@
-STRINGdummy:="abcde";FLOATn;FLOATx1,x2;FLOATfx,dfx;FLOATerror;INTi;
-Finished
+Symbol table GLOBAL
+name dummy type STRING value "abcde"
+name n type FLOAT
+name x1 type FLOAT
+name x2 type FLOAT
+name fx type FLOAT
+name dfx type FLOAT
+name error type FLOAT
+name i type INT
+Symbol table main
+Symbol table BLOCK 1
+name x3 type FLOAT

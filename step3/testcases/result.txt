@@ -1,0 +1,25 @@
+10a11
+> 
+11a13
+> 
+12a15
+> 
+10a11
+> 
+11a13
+> 
+12a15
+> 
+10c10
+< name x3 type FLOAT
+---
+> 
+12a14
+> name x3 type FLOAT
+7c7
+< name jprime type INT
+---
+> 
+10a12,13
+> name jprime type INT
+> 

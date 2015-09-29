@@ -20,7 +20,7 @@ public class Micro {
 				ParseTreeWalker walker = new ParseTreeWalker();
 				MicroSymbolListener listener = new MicroSymbolListener();
 				walker.walk(listener, tree);
-				System.out.println("Finished");
+				//System.out.println("Finished");
 				}
 				catch (Exception e) {
 					System.out.println(e.getMessage());
