@@ -134,6 +134,7 @@ public class MicroIRListener extends MicroBaseListener{
 	@Override public void exitPgm_body(MicroParser.Pgm_bodyContext ctx) { 
 	
 		//tree.printAll(tree.root);
+		codeGenerater.setSymbols(tree.getAllsymbols(tree.root));
 		codeGenerater.printIRNodes();
 	}
 
