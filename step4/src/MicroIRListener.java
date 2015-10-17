@@ -339,7 +339,7 @@ public class MicroIRListener extends MicroBaseListener{
 				return;
 			}
 			
-			
+
 			codeGenerater.addIRNode(new IRNode(opname, exprText, null, result));
 
 	}
