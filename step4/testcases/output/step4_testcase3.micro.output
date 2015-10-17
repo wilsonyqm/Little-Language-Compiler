@@ -1,0 +1,32 @@
+
+20
+:=
+
+30
+:=
+
+40
+:=
+a*b+
+c
+c+a*b+(a*b+c)/a+
+20
+:=
+b*b+
+a
+:=
+
+b*a
+
+(b*a)/a
+:=
+;IR code
+;STOREI a
+;STOREI b
+;STOREI c
+;STOREI c
+;STOREI b
+;STOREI a
+;WRITEI c
+;WRITEI b
+;WRITEI a

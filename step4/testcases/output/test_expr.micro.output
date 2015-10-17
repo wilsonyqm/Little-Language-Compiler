@@ -1,0 +1,111 @@
+
+1
+:=
+
+2
+:=
+
+10
+:=
+
+20
+:=
+a+
+b
+:=
+
+a*c
+:=
+0-a+
+b
+:=
+0-
+d
+:=
+a+
+b
+d+
+c
+a+b+c+
+d
+(a+b)*(d+c)-
+(a+b+c+d)/a
+:=
+a+
+10
+:=
+b+a+
+10
+:=
+0-
+10
+:=
+
+1.0
+:=
+
+2.0
+:=
+
+3.14159
+:=
+
+z/2.0
+:=
+
+z/y
+:=
+x+y+
+z
+
+(x+y+z)/z
+:=
+
+t*t
+:=
+t+z+t+t/2.0+z/4.0+z/5.0+z/6.0+
+z/7.0
+
+(t+z+t+t/2.0+z/4.0+z/5.0+z/6.0+z/7.0)
+:=
+;IR code
+;STOREI a
+;STOREI b
+;STOREI c
+;STOREI d
+;WRITEI a
+;WRITEI b
+;WRITEI c
+;WRITEI d
+;STOREI a
+;WRITEI a
+;STOREI b
+;WRITEI b
+;STOREI c
+;WRITEI c
+;STOREI d
+;WRITEI d
+;STOREI a
+;WRITEI a
+;STOREI a
+;WRITEI a
+;STOREI b
+;WRITEI b
+;STOREI c
+;WRITEI c
+;STOREF x
+;STOREF y
+;STOREF z
+;WRITEF x
+;WRITEF z
+;WRITEF y
+;STOREF x
+;STOREF y
+;WRITEF x
+;WRITEF y
+;STOREF t
+;WRITEF t
+;STOREF t
+;WRITEF t
+;STOREF t
+;WRITEF t
