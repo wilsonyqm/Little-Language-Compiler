@@ -138,6 +138,7 @@ public class MicroIRListener extends MicroBaseListener{
 		//tree.printAll(tree.root);
 		codeGenerater.setSymbols(tree.getAllsymbols(tree.root));
 		codeGenerater.printIRNodes();
+		codeGenerater.printTinyNodes();
 	}
 
 	@Override public void enterFunc_decl(MicroParser.Func_declContext ctx) {

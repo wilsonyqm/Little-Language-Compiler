@@ -72,7 +72,7 @@ public class SymbolTable{
 	}
 	public ArrayList<Symbol> getSymbols() {
 		Iterator<Symbol> symbols = table.values().iterator();
-		ArrayList<Symbol> res = new ArrayList
+		ArrayList<Symbol> res = new ArrayList<>();
 		while(symbols.hasNext()){
 			Symbol currentSymbol = symbols.next();
 			res.add(currentSymbol);

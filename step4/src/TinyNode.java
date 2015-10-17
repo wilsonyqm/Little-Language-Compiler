@@ -22,7 +22,13 @@ public class TinyNode{
 	@Override
 	public String toString() {
 		String str = "";
-		if (oprand1 == null) {
+		if (oprand1 == null && oprand2 == null) {
+			str += opCode;
+		}
+		else if (oprand2 == null) {
+			str += opCode + " " + oprand1;
+		}
+		else if (oprand1 == null) {
 			str += opCode + " " + oprand2;
 		}
 		else {

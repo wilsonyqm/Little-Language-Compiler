@@ -14,7 +14,7 @@ public class CodeGenerater{
 		regMap = new HashMap<>();
     }
 	private String getTinyRegister(String str) {
-		if (str.isRegister() && regMap.containsKey(str)) {
+		if (isRegister(str) && regMap.containsKey(str)) {
 			return regMap.get(str);
 		}
 		else {
@@ -41,7 +41,7 @@ public class CodeGenerater{
     	}	
     }
     public void printTinyNodes(){
-		//convertIRtoTiny(iRNodes, tinyNodes);
+		convertListIRtoTiny(iRNodes, tinyNodes);
     	System.out.println(";Tiny code");
 		for (int i = 0; i < symbols.size(); i++) {
 			System.out.println("var " + symbols.get(i).getName());
@@ -50,11 +50,11 @@ public class CodeGenerater{
     		System.out.println(tinyNodes.get(i).toString());
     	}	
     }
-	private void converListIRtoTiny(ArrayList<IRNode> irlist, ArrayList<TinyNode> tinylist) {
+	private void convertListIRtoTiny(ArrayList<IRNode> irlist, ArrayList<TinyNode> tinylist) {
 		for (IRNode irnode : irlist) {
 			tinylist.addAll(convertNodeIRtoTiny(irnode));
-			tinylist.add(new TinyNode("sys halt", null, null));
 		}
+		tinylist.add(new TinyNode("sys halt", null, null));
 	}
 	private ArrayList<TinyNode> convertNodeIRtoTiny(IRNode irnode) {
 		String opCode = irnode.getOpCode();
@@ -64,8 +64,8 @@ public class CodeGenerater{
 		String r = irnode.getResult();
 		String s1, s2;
 		String cmmd = getCmmd(opCode);
-		if (opCode.equals("STOREI" || "STOREF")) {
-			if (isRegister(irnode.getOperand1()) {
+		if (opCode.equals("STOREI") || opCode.equals("STOREF")) {
+			if (isRegister(irnode.getOperand1())) {
 				s1 = getTinyRegister(irnode.getOperand1());
 				s2 = irnode.getResult();
 			}
@@ -101,11 +101,12 @@ public class CodeGenerater{
 			regMap.put(r, s2);
 			res.add(new TinyNode(cmmd, s1, s2));
 		}
+		return res;
 	}
 	/* Type Distinguish
 	*
 	*/
-	private Stirng getCmmd(String str) {
+	private String getCmmd(String str) {
 		String cmmd;
 		switch (str) {
 			case "ADDI": 
