@@ -364,8 +364,7 @@ public class MicroIRListener extends MicroBaseListener{
 			if(expr_prefix == null){
 				
 				String registerName = getRegister();    
-		        NodeInfo expr_prefix = new NodeInfo(addop,factorText,factorType);
-			    
+		        NodeInfo expr_prefix_new = new NodeInfo(addop,factorText,factorType);    
 				
 			}
 			
@@ -377,15 +376,16 @@ public class MicroIRListener extends MicroBaseListener{
 		        String opCode = loopupOpCode(mathOp,factorType);
 		        IRNode node = new IRNode(opCode,temp, factorText,registerName);
 		        codeGenerater.addIRNode(node);	  
-		        NodeInfo expr_prefix = new NodeInfo(addop,registerName,factorType)
+		        NodeInfo expr_prefix_new = new NodeInfo(addop,registerName,factorType)
 			
 			}
-			setValue(ctx,expr_prefix);
+			setValue(ctx,expr_prefix_new);
 						
 	}
 		
 	@Override public void exitFactor(MicroParser.FactorContext ctx) {
-		return;
+				
+			
 	}
 		
 	@Override public void exitFactor_prefix(MicroParser.Factor_prefixContext ctx) {
