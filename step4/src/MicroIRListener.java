@@ -318,7 +318,6 @@ public class MicroIRListener extends MicroBaseListener{
 			NodeInfo expr = getValue(ctx.getChild(2));
 			String exprText = expr.getTemp();
 		
-			String registerName = getRegister();
 			String opname = "";
 			
 
@@ -340,8 +339,7 @@ public class MicroIRListener extends MicroBaseListener{
 				return;
 			}
 			
-			codeGenerater.addIRNode(new IRNode(opname,exprText,null,registerName));
-			codeGenerater.addIRNode(new IRNode(opname, registerName, null, result));
+			codeGenerater.addIRNode(new IRNode(opname, exprText, null, result));
 
 	}
 		

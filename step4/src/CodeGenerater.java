@@ -42,7 +42,7 @@ public class CodeGenerater{
     }
     public void printTinyNodes(){
 		convertListIRtoTiny(iRNodes, tinyNodes);
-    	System.out.println(";Tiny code");
+    	System.out.println(";tiny code");
 		for (int i = 0; i < symbols.size(); i++) {
 			System.out.println("var " + symbols.get(i).getName());
 		}
@@ -126,6 +126,12 @@ public class CodeGenerater{
 				break;			
 			case "DIVI"	:
 				cmmd = "divi";
+				break;
+			case "DIVF" :
+				cmmd = "divr";
+				break;
+			case "MULTF" :
+				cmmd = "mulr";
 				break;
 			case "WRITEF": 
 				cmmd = "sys writer";
