@@ -313,22 +313,35 @@ public class MicroIRListener extends MicroBaseListener{
 	
 			String result = ctx.getChild(0).getText();
 			String type = tree.checkType(result);
+
 			NodeInfo expr = getValue(ctx.getChild(2));
 			String exprText = expr.getTemp();
 		
+			String registerName = getRegister();
+			String opname = "";
+			
+
 			if(type == null){
 					System.out.println("ERROR ID");
 					return;
 				}
 			if (type.equals("INT")){
-				IRNode node = new IRNode("STOREI",exprText,null,result);
-				codeGenerater.addIRNode(node);
-				}
+
+				opname = "STOREI";
+			}
+
 			else if (type.equals("FLOAT")){
-				IRNode node = new IRNode("STOREF",exprText,null,result);
-				codeGenerater.addIRNode(node);
-				}
+
+				opname = "STOREF";
+			}
+			else {
+				System.out.println("ERROR NAME");
+				return;
+			}
 			
+			codeGenerater.addIRNode(new IRNode(opname,exprText,null,registerName));
+			codeGenerater.addIRNode(new IRNode(opname, registerName, null, result));
+
 	}
 		
 	

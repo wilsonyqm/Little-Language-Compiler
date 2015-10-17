@@ -23,7 +23,12 @@ public class CodeGenerater{
     		System.out.println(";"+iRNodes.get(i).toString());
     	}	
     }
-    
-    
-    
+    public void printTinyNodes(){
+		convertIRtoTiny(iRNodes, tinyNodes);
+    	System.out.println(";Tiny code");
+    	for(int i=0; i<tinyNodes.size();i++){
+    		System.out.println(tinyNodes.get(i).toString());
+    	}	
+    }
+	
 }
