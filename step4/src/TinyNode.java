@@ -13,11 +13,11 @@ public class TinyNode{
 	}
 
 	public String getOperand1(){
-		return operand1;
+		return oprand1;
 	}
 	
 	public String getOperand2(){
-		return operand2;
+		return oprand2;
 	}
 	@Override
 	public String toString() {

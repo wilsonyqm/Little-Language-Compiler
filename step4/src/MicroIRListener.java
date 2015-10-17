@@ -20,7 +20,7 @@ public class MicroIRListener extends MicroBaseListener{
 		this.codeGenerater = new CodeGenerater();
 		this.parseTreeValue = new ParseTreeProperty<NodeInfo>();
 		this.blocknum = 1;
-		this.registernum = 1;
+		this.registernum = 0;
 	}
 	
 	//********************helper functions************************************
@@ -67,7 +67,7 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 	
 	private NodeInfo getValue(ParseTree ctx) {
-		if(ctx.getText() == "")
+		if(ctx == null || ctx.getText() == "")
 			return null;
 		return parseTreeValue.get(ctx);
 	}
@@ -309,7 +309,6 @@ public class MicroIRListener extends MicroBaseListener{
 	
 			
 	@Override public void exitAssign_expr(MicroParser.Assign_exprContext ctx) {
-	System.out.println("exitAssign_expr");
 	
 			String result = ctx.getChild(0).getText();
 			String type = tree.checkType(result);
@@ -346,7 +345,6 @@ public class MicroIRListener extends MicroBaseListener{
 		
 	
 	@Override public void exitExpr(MicroParser.ExprContext ctx){
-	System.out.println("exitExpr");
 		
 		NodeInfo expr_prefix = getValue(ctx.getChild(0));
 	    NodeInfo factor = getValue(ctx.getChild(1));
@@ -375,10 +373,8 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 		
 	@Override public void exitExpr_prefix(MicroParser.Expr_prefixContext ctx) {
-	System.out.println("exitExpr_prefix");
 	
 		if(ctx.getText() == ""){
-			System.out.println("empty node");
 			return;
 		}	
 			NodeInfo expr_prefix = getValue(ctx.getChild(0));
@@ -389,7 +385,6 @@ public class MicroIRListener extends MicroBaseListener{
 			
 			if(expr_prefix == null){
 				
-				String registerName = getRegister();    
 		        NodeInfo expr_prefix_new = new NodeInfo(addop,factorText,factorType);    
 				setValue(ctx,expr_prefix_new);
 			}
@@ -411,7 +406,6 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 		
 	@Override public void exitFactor(MicroParser.FactorContext ctx) {
-	System.out.println("exitFactor");
 				
 			NodeInfo factor_prefix = getValue(ctx.getChild(0));
 			NodeInfo postfix_expr = getValue(ctx.getChild(1));
@@ -437,7 +431,7 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 		
 	@Override public void exitFactor_prefix(MicroParser.Factor_prefixContext ctx) {
-	System.out.println("exitFactor_prefix");
+	
 		if(ctx.getText() == ""){
 			return;
 		}	 
@@ -448,8 +442,7 @@ public class MicroIRListener extends MicroBaseListener{
 			String mulop = ctx.getChild(2).getText();
 			
 			if(factor_prefix == null){
-				
-				String registerName = getRegister();    
+		 
 		        NodeInfo factor_prefix_new = new NodeInfo(mulop,postfixText,postfixType); 
 		        setValue(ctx,factor_prefix_new);   
 				
@@ -471,31 +464,39 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 		
 	@Override public void exitPostfix_expr(MicroParser.Postfix_exprContext ctx) {
-	System.out.println("exitPostfix_expr");
 	
 			NodeInfo postfix_expr = getValue(ctx.getChild(0));
 			setValue(ctx,postfix_expr);
 	}
 	
 	@Override public void exitPrimary(MicroParser.PrimaryContext ctx){
-	System.out.println("exitPrimary");
 	
 			NodeInfo expr = getValue(ctx.getChild(1));
 			if(expr != null){
 				setValue(ctx,expr);
 			}
 			else{
-				NodeInfo value = getValue(ctx.getChild(0));
-				setValue(ctx,value);
+				String primary = ctx.getChild(0).getText();
+			    String type = tree.checkType(primary);
+			    if(!primary.matches("[a-zA-Z]+")){
+			    	String registerName = getRegister();
+			    	String opCode = lookupStoreCode(type);
+			    	IRNode node = new IRNode(opCode,primary,null,registerName);
+			    	codeGenerater.addIRNode(node);
+					NodeInfo value = new NodeInfo(null,registerName,type);
+					setValue(ctx,value);
+				}
+				else{
+					NodeInfo value = getValue(ctx.getChild(0));
+					setValue(ctx,value);
+				}
 			}
-	}
+	}	
 	
-	@Override public void exitAddop(MicroParser.AddopContext ctx){
-			return;
-	}
-	
-	@Override public void exitMulop(MicroParser.MulopContext ctx){
-			return; 
+	@Override public void exitId(MicroParser.IdContext ctx) {
+			String type = tree.checkType(ctx.getText());
+			NodeInfo id = new NodeInfo(null,ctx.getText(),type);
+			setValue(ctx,id);
 	}
 	
 }

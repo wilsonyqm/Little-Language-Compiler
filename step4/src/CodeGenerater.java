@@ -24,7 +24,7 @@ public class CodeGenerater{
     	}	
     }
     public void printTinyNodes(){
-		convertIRtoTiny(iRNodes, tinyNodes);
+		//convertIRtoTiny(iRNodes, tinyNodes);
     	System.out.println(";Tiny code");
     	for(int i=0; i<tinyNodes.size();i++){
     		System.out.println(tinyNodes.get(i).toString());

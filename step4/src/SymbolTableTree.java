@@ -16,6 +16,20 @@ public class SymbolTableTree{
 	}
 	
 	public String checkType(String value){
+		try{
+			int integer = Integer.parseInt(value);
+			return "INT";
+		}
+		catch(NumberFormatException e){
+		}
+		
+		try{
+			float floatnum = Float.parseFloat(value);
+			return "FLOAT";
+		}
+		catch(NumberFormatException e){
+		}
+		
 		SymbolTable scope = currscope;
 		while(scope!=null){
 			if(scope.checkType(value)!=null)
