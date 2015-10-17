@@ -50,5 +50,18 @@ public class SymbolTableTree{
 		}
 		}
 	}
-	
+	public ArrayList<Symbol> getAllsymbols(SymbolTable table) {
+		ArrayList<Symbol> res = new ArrayList<>();
+		if (table == null)
+			return res;
+		
+		res.addAll(table.getSymbols());
+		if(table.children!=null){
+			for(int i=0;i<table.children.size();i++){
+				SymbolTable child_table = table.children.get(i);
+				res.addAll(getAllsymbols(child_table));
+			}
+		}
+		return res;
+	}
 }

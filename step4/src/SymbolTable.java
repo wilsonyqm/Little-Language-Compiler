@@ -70,7 +70,15 @@ public class SymbolTable{
 				System.out.println("name "+name+" type "+type);
 		}
 	}
-	
+	public ArrayList<Symbol> getSymbols() {
+		Iterator<Symbol> symbols = table.values().iterator();
+		ArrayList<Symbol> res = new ArrayList
+		while(symbols.hasNext()){
+			Symbol currentSymbol = symbols.next();
+			res.add(currentSymbol);
+		}
+		return res;
+	}
 	public String checkType(String name){
 		if(table.containsKey(name))
 			return table.get(name).getType();
