@@ -8,7 +8,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
     SymbolTableTree tree;
     
-    ParseTreeProperty<Symbol> parseTreeValue;
+    ParseTreeProperty<NodeInfo> parseTreeValue;
     
 	private int blocknum;
 	
@@ -18,7 +18,7 @@ public class MicroIRListener extends MicroBaseListener{
 	MicroIRListener(){
 		this.tree = new SymbolTableTree();
 		this.codeGenerater = new CodeGenerater();
-		this.parseTreeValue = new ParseTreeProperty<String>();
+		this.parseTreeValue = new ParseTreeProperty<NodeInfo>();
 		this.blocknum = 1;
 		this.registernum = 1;
 	}
@@ -67,6 +67,8 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 	
 	private NodeInfo getValue(ParseTree ctx) {
+		if(ctx.getText() == "")
+			return null;
 		return parseTreeValue.get(ctx);
 	}
 	
@@ -307,20 +309,23 @@ public class MicroIRListener extends MicroBaseListener{
 	
 			
 	@Override public void exitAssign_expr(MicroParser.Assign_exprContext ctx) {
+	System.out.println("exitAssign_expr");
+	
 			String result = ctx.getChild(0).getText();
 			String type = tree.checkType(result);
-			String expr = getValue(ctx.getChild(2));
+			NodeInfo expr = getValue(ctx.getChild(2));
+			String exprText = expr.getTemp();
 		
 			if(type == null){
 					System.out.println("ERROR ID");
 					return;
 				}
 			if (type.equals("INT")){
-				IRNode node = new IRNode("STOREI",value,null,result);
+				IRNode node = new IRNode("STOREI",exprText,null,result);
 				codeGenerater.addIRNode(node);
 				}
 			else if (type.equals("FLOAT")){
-				IRNode node = new IRNode("STOREF",value,null,result);
+				IRNode node = new IRNode("STOREF",exprText,null,result);
 				codeGenerater.addIRNode(node);
 				}
 			
@@ -328,44 +333,52 @@ public class MicroIRListener extends MicroBaseListener{
 		
 	
 	@Override public void exitExpr(MicroParser.ExprContext ctx){
+	System.out.println("exitExpr");
 		
 		NodeInfo expr_prefix = getValue(ctx.getChild(0));
 	    NodeInfo factor = getValue(ctx.getChild(1));
 		String factorType = factor.getType();
-		String factorText = factor.getText();
-		String registerName = getRegister();
+		String factorText = factor.getTemp();
+		
 		 
 		if(expr_prefix != null){
 		
+		   String registerName = getRegister();
 		   String temp = expr_prefix.getTemp();
 		   String addop = expr_prefix.getOpCode();		  
-		   String opCode = loopupOpCode(addop,factorType);
+		   String opCode = lookupOpCode(addop,factorType);
 		   IRNode node = new IRNode(opCode,temp, factorText,registerName);
 		   codeGenerater.addIRNode(node);
 		   NodeInfo expr = new NodeInfo(null,registerName,factorType);
-	
+		   setValue(ctx,expr);
 		}
 		else{
 		   NodeInfo expr = new NodeInfo(null,factorText,factorType);
+		   setValue(ctx,expr);
 		}
 		
-		setValue(ctx,expr);
+		
 		  
 	}
 		
 	@Override public void exitExpr_prefix(MicroParser.Expr_prefixContext ctx) {
+	System.out.println("exitExpr_prefix");
 	
+		if(ctx.getText() == ""){
+			System.out.println("empty node");
+			return;
+		}	
 			NodeInfo expr_prefix = getValue(ctx.getChild(0));
 			NodeInfo factor = getValue(ctx.getChild(1));
 			String factorType = factor.getType();
-			String factorText = factor.getText();
-			addop = ctx.getChild(2);
+			String factorText = factor.getTemp();
+			String addop = ctx.getChild(2).getText();
 			
 			if(expr_prefix == null){
 				
 				String registerName = getRegister();    
 		        NodeInfo expr_prefix_new = new NodeInfo(addop,factorText,factorType);    
-				
+				setValue(ctx,expr_prefix_new);
 			}
 			
 			else{
@@ -373,39 +386,103 @@ public class MicroIRListener extends MicroBaseListener{
 				String registerName = getRegister();
 				String temp = expr_prefix.getTemp();
 		        String mathOp = expr_prefix.getOpCode();		  
-		        String opCode = loopupOpCode(mathOp,factorType);
+		        String opCode = lookupOpCode(mathOp,factorType);
 		        IRNode node = new IRNode(opCode,temp, factorText,registerName);
 		        codeGenerater.addIRNode(node);	  
-		        NodeInfo expr_prefix_new = new NodeInfo(addop,registerName,factorType)
+		        NodeInfo expr_prefix_new = new NodeInfo(addop,registerName,factorType);
+		        setValue(ctx,expr_prefix_new);
 			
 			}
-			setValue(ctx,expr_prefix_new);
+			
 						
 	}
 		
 	@Override public void exitFactor(MicroParser.FactorContext ctx) {
+	System.out.println("exitFactor");
 				
+			NodeInfo factor_prefix = getValue(ctx.getChild(0));
+			NodeInfo postfix_expr = getValue(ctx.getChild(1));
+			
+			String postfixType = postfix_expr.getType();
+			String postfixText = postfix_expr.getTemp();
+			
+			if(factor_prefix == null){
+				NodeInfo factor = new NodeInfo(null,postfixText,postfixType);
+				setValue(ctx,factor);
+			}
+			else{
+				String registerName = getRegister();
+				String temp = factor_prefix.getTemp();
+				String mathOp = factor_prefix.getOpCode();
+				String opCode = lookupOpCode(mathOp,postfixType);
+				IRNode node = new IRNode(opCode,temp,postfixText,registerName);
+				codeGenerater.addIRNode(node);
+				NodeInfo factor = new NodeInfo(null,registerName,postfixType);
+				setValue(ctx,factor);
+			}
 			
 	}
 		
 	@Override public void exitFactor_prefix(MicroParser.Factor_prefixContext ctx) {
-		return; 
+	System.out.println("exitFactor_prefix");
+		if(ctx.getText() == ""){
+			return;
+		}	 
+			NodeInfo factor_prefix = getValue(ctx.getChild(0));
+			NodeInfo postfix_expr = getValue(ctx.getChild(1));
+			String postfixType = postfix_expr.getType();
+			String postfixText = postfix_expr.getTemp();
+			String mulop = ctx.getChild(2).getText();
+			
+			if(factor_prefix == null){
+				
+				String registerName = getRegister();    
+		        NodeInfo factor_prefix_new = new NodeInfo(mulop,postfixText,postfixType); 
+		        setValue(ctx,factor_prefix_new);   
+				
+			}
+			
+			else{
+				
+				String registerName = getRegister();
+				String temp = factor_prefix.getTemp();
+		        String mathOp = factor_prefix.getOpCode();		  
+		        String opCode = lookupOpCode(mathOp,postfixType);
+		        IRNode node = new IRNode(opCode,temp, postfixText,registerName);
+		        codeGenerater.addIRNode(node);	  
+		        NodeInfo factor_prefix_new = new NodeInfo(mulop,registerName,postfixType);
+		        setValue(ctx,factor_prefix_new);
+		        	
+			}
+			
 	}
 		
 	@Override public void exitPostfix_expr(MicroParser.Postfix_exprContext ctx) {
-		return; 
+	System.out.println("exitPostfix_expr");
+	
+			NodeInfo postfix_expr = getValue(ctx.getChild(0));
+			setValue(ctx,postfix_expr);
 	}
 	
 	@Override public void exitPrimary(MicroParser.PrimaryContext ctx){
-		return; 
+	System.out.println("exitPrimary");
+	
+			NodeInfo expr = getValue(ctx.getChild(1));
+			if(expr != null){
+				setValue(ctx,expr);
+			}
+			else{
+				NodeInfo value = getValue(ctx.getChild(0));
+				setValue(ctx,value);
+			}
 	}
 	
 	@Override public void exitAddop(MicroParser.AddopContext ctx){
-		return; 
+			return;
 	}
 	
 	@Override public void exitMulop(MicroParser.MulopContext ctx){
-		return; 
+			return; 
 	}
 	
 }
