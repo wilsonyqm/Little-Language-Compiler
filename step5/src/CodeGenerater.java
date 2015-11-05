@@ -7,6 +7,7 @@ public class CodeGenerater{
     ArrayList<ArrayList<IRNode>> incrNodes;
 	private int tinycount;
 	private HashMap<String, String> regMap;
+	private HashSet<String> compareSet;
     public CodeGenerater(){
     	iRNodes = new ArrayList<IRNode>();
     	tinyNodes = new ArrayList<TinyNode>();
@@ -14,6 +15,8 @@ public class CodeGenerater{
 		symbols = new ArrayList<>();
 		tinycount = 0;
 		regMap = new HashMap<>();
+		compareSet = new HashSet<>();
+		init_compareSet(compareSet);
     }
 	private String getTinyRegister(String str) {
 		if (isRegister(str) && regMap.containsKey(str)) {
@@ -62,7 +65,13 @@ public class CodeGenerater{
 		convertListIRtoTiny(iRNodes, tinyNodes);
     	System.out.println(";tiny code");
 		for (int i = 0; i < symbols.size(); i++) {
-			System.out.println("var " + symbols.get(i).getName());
+			if (symbols.get(i).getType().equals("STRING")) {
+				System.out.println("str " + symbols.get(i).getName() + " " + symbols.get(i).getValue());
+				// System.out.println("str " + symbols.get(i).getName() + "\"" + "\\" + "n" + "\"");
+			}
+			else {
+				System.out.println("var " + symbols.get(i).getName());
+			}
 		}
     	for(int i=0; i<tinyNodes.size();i++){
     		System.out.println(tinyNodes.get(i).toString());
@@ -74,6 +83,7 @@ public class CodeGenerater{
 		}
 		tinylist.add(new TinyNode("sys halt", null, null));
 	}
+	
 	private ArrayList<TinyNode> convertNodeIRtoTiny(IRNode irnode) {
 		String opCode = irnode.getOpCode();
 		ArrayList<TinyNode> res = new ArrayList<>();
@@ -87,16 +97,54 @@ public class CodeGenerater{
 				s1 = getTinyRegister(irnode.getOperand1());
 				s2 = irnode.getResult();
 			}
-			else {
+			else if (isRegister(r)){
 				s2 = getTinyRegister(irnode.getResult());
 				s1 = irnode.getOperand1();
+			}
+			else {
+				String newReg = getTinyRegister(op1);
+				res.add(new TinyNode("move", op1, newReg));
+				s1 = newReg;
+				s2 = r;
 			}
 			res.add(new TinyNode("move", s1, s2));
 		}
 		else if (opCode.equals("WRITEF") || opCode.equals("WRITEI")) {
 			res.add(new TinyNode(cmmd, null, r));
 		}
+		else if (opCode.equals("READI") || opCode.equals("READF") || opCode.equals("WRITES")) {
+			res.add(new TinyNode("sys", cmmd, r));
+		}
+		else if (compareSet.contains(opCode)) {
+			String newReg = getTinyRegister(op2);
+			if (!isRegister(op2)) {
+				res.add(new TinyNode("move", op2, newReg));
+			}
+			// Get Op1 Type
+			String op1Type = "";
+			for (int i = 0; i < symbols.size(); i++) {
+				if (symbols.get(i).getName().equals(op1)) {
+					op1Type = symbols.get(i).getType();
+				}
+			}
+			if (op1Type.equals("")) System.out.println("ERROR, NOT FIND SYMBOL");
+			
+			//Insert Type compare 
+			if (op1Type.equals("INT")) {
+				res.add(new TinyNode("cmpi", op1, newReg));
+			}
+			else {
+				res.add(new TinyNode("cmpr", op1, newReg));
+			}
+			//Jump 
+			res.add(new TinyNode(cmmd, null, r));
+		}
+		else if (opCode.equals("LABEL") || opCode.equals("JUMP")) {
+			
+			res.add(new TinyNode(cmmd, null, r));
+		}
 		else {
+			
 			if (isRegister(op1) && isRegister(op2)) {
 				s1 = getTinyRegister(op2);
 				s2 = getTinyRegister(op1);
@@ -121,6 +169,16 @@ public class CodeGenerater{
 		}
 		return res;
 	}
+	
+	private void init_compareSet(HashSet<String> set) {
+		set.add("GE");
+		set.add("GT");
+		set.add("LE");
+		set.add("LT");
+		set.add("NE");
+		set.add("EQ");
+	}
+	
 	/* Type Distinguish
 	*
 	*/
@@ -156,6 +214,39 @@ public class CodeGenerater{
 				break;
 			case "WRITEI"	:
 				cmmd = "sys writei";
+				break;
+			case "LT" :
+				cmmd = "jlt";
+				break;
+			case "LE" :
+				cmmd = "jle";
+				break;
+			case "EQ": 
+				cmmd = "jeq";
+				break;
+			case "GE"	:
+				cmmd = "jge";
+				break;
+			case "GT" :
+				cmmd = "jgt";
+				break;	
+			case "NE" :
+				cmmd = "jne";
+				break;
+			case "LABEL" :
+				cmmd = "label";
+				break;
+			case "JUMP" :
+				cmmd = "jmp";
+				break;
+			case "READI" :
+				cmmd = "readi";
+				break;
+			case "READF" :
+				cmmd = "readr";
+				break;
+			case "WRITES" :
+				cmmd = "writes";
 				break;
 			default:
 				cmmd = "ERROR";
