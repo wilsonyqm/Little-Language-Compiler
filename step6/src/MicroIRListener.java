@@ -212,8 +212,9 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 	
 	private int getSymbolNum(SymbolTable table) {
-		if (table == null || table.getChild().size() == 0) return 0;
+		if (table == null) return 0;
 		int sum = table.getTable().size();
+		if (table.getChild().size() == 0) return sum;
 		for (SymbolTable t : table.getChild()) {
 			sum += getSymbolNum(t);
 		}
@@ -286,6 +287,7 @@ public class MicroIRListener extends MicroBaseListener{
 		codeGenerater.addIRNode(link);
 		codeGenerater.setparaNum(paraNum);
 	}
+
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
 		int symbolnum = getSymbolNum(tree.root);
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
@@ -293,7 +295,7 @@ public class MicroIRListener extends MicroBaseListener{
 		
 		tree.exitscope();
 	}
-	
+	@Override public void enterCall_expr(MicroParser.)
 	@Override public void enterIf_stmt(MicroParser.If_stmtContext ctx) {
 //	System.out.println("enterIf_stmt");
 		SymbolTable table = new SymbolTable(getBlkName());
@@ -689,8 +691,29 @@ public class MicroIRListener extends MicroBaseListener{
 						codeGenerater.addIncrNode(node);
 
 	}
+	@Override public void exitExpr_list(MicroParser.Expr_listContext ctx) {
+		NodeInfo  expr = getValue(ctx.getChild(0));
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
+		codeGenerater.addIRNode(new IRNode("PUSH", null, null, null));
+		codeGenerater.addIRNode(new IRNode("PUSH", null, null, expr.getTemp()));
 		
-	
+	}
+	@Override public void exitExpr_list_tail(MicroParser.Expr_list_tailContext ctx) {
+		NodeInfo  expr = getValue(ctx.getChild(1));
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
+		codeGenerater.addIRNode(new IRNode("PUSH", null, null, expr.getTemp()));
+	}
+	@Override public void exitCall_expr(MicroParser.Call_exprContext ctx) {
+		NodeInfo  id = getValue(ctx.getChild(0));
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
+		codeGenerater.addIRNode(new IRNode("JSF", null, null, id.getTemp()));
+		codeGenerater.addIRNode(new IRNode("POP", null, null, null));
+		codeGenerater.addIRNode(new IRNode("POP", null, null, getFunction(ctx).getRegister()));
+	}
+	@Override public void exitReturn_stmt(MicroParser.Return_stmtContext ctx) {
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
+		codeGenerater.addIRNode(new IRNode("RET", null, null, null));
+	}
 	@Override public void exitExpr(MicroParser.ExprContext ctx){
 //	System.out.println("exitExpr");
 		

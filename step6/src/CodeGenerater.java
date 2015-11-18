@@ -20,21 +20,46 @@ public class CodeGenerater{
 		compareSet = new HashSet<>();
 		init_compareSet(compareSet);
     }
+	private int getTinyCount() {
+		return tinycount;
+	}
+	private void setTinyCount(int a) {
+		tinycount = a;
+	}
 	private void setparaNum(int a) {
 		paraNum = a;
 	}
 	private void setlocalVarNum(int a) {
 		localVarNum = a;
 	}
-	private void getparaNum() {
+	private int getparaNum() {
 		return paraNum;
 	}
-	private void getlocalVarNum() {
+	private int getlocalVarNum() {
 		return localVarNum;
 	}
 	private String getTinyRegister(String str) {
 		if (isRegister(str) && regMap.containsKey(str)) {
 			return regMap.get(str);
+		}
+		else if (isRegister(str) && str.length() > 2) {
+			String tmp;
+			if (str.charAt(1) == 'L') {
+				tmp = "$-" + str.substring(2);
+				regMap.put(str, tmp);
+				return tmp;
+			}
+			else if (str.charAt(1) == 'P') {
+				tmp = "$" + (6 + paraNum - Integer.parseInt(str.substring(2)));
+			}
+			else if (str.charAt(1) == 'R') {
+				tmp = "$" + (6 + paraNum);
+			}
+			else {
+				tmp = "r" + tinycount++;
+			}
+			regMap.put(str, tmp);
+			return tmp;
 		}
 		else {
 			String tmp = "r" + tinycount++;
@@ -79,14 +104,25 @@ public class CodeGenerater{
 		convertListIRtoTiny(iRNodes, tinyNodes);
     	System.out.println(";tiny code");
 		for (int i = 0; i < symbols.size(); i++) {
-			if (symbols.get(i).getType().equals("STRING")) {
-				System.out.println("str " + symbols.get(i).getName() + " " + symbols.get(i).getValue());
-				// System.out.println("str " + symbols.get(i).getName() + "\"" + "\\" + "n" + "\"");
-			}
-			else {
-				System.out.println("var " + symbols.get(i).getName());
+			if (symbols.get(i).getAttr().equals("global")) {
+				if (symbols.get(i).getType().equals("STRING")) {
+					System.out.println("str " + symbols.get(i).getName() + " " + symbols.get(i).getValue());
+					// System.out.println("str " + symbols.get(i).getName() + "\"" + "\\" + "n" + "\"");
+				}
+				else {
+					System.out.println("var " + symbols.get(i).getName());
+				}
 			}
 		}
+		//start main function
+		System.out.println("push");
+		System.out.println("push r0");
+		System.out.println("push r1");
+		System.out.println("push r2");
+		System.out.println("push r3");
+		System.out.println("jsr main");
+						
+		System.out.println();
     	for(int i=0; i<tinyNodes.size();i++){
     		System.out.println(tinyNodes.get(i).toString());
     	}	
@@ -123,6 +159,9 @@ public class CodeGenerater{
 			}
 			res.add(new TinyNode("move", s1, s2));
 		}
+		else if (opCode == null) {
+			//doing nothing
+		}
 		else if (opCode.equals("WRITEF") || opCode.equals("WRITEI")) {
 			res.add(new TinyNode(cmmd, null, r));
 		}
@@ -156,6 +195,36 @@ public class CodeGenerater{
 		else if (opCode.equals("LABEL") || opCode.equals("JUMP")) {
 			
 			res.add(new TinyNode(cmmd, null, r));
+		}
+		else if (opCode.equals("LINK")) {
+			res.add(new TinyNode(cmmd, null, localVarNum));
+		}
+		else if (opCode.equals("PUSH")) {
+			if (isRegister(r)) {
+				res.add(new TinyNode("push", null, null));
+				res.add(new TinyNode("push", null, getTinyRegister(r)));
+				res.add(new TinyNode("push", null, "r0"));
+				res.add(new TinyNode("push", null, "r1"));
+				res.add(new TinyNode("push", null, "r2"));
+				res.add(new TinyNode("push", null, "r3"));
+			}
+		}
+		else if (opCode.equals("JSR")) {
+			res.add(new TinyNode("jsr", null, r));
+		}
+		else if (opCode.equals("POP")) {
+			if (isRegister(r)) {
+				res.add(new TinyNode("pop", null, "r3"));
+				res.add(new TinyNode("pop", null, "r2"));
+				res.add(new TinyNode("pop", null, "r1"));
+				res.add(new TinyNode("pop", null, "r0"));
+				res.add(new TinyNode("pop", null, null));
+				res.add(new TinyNode("pop", null, getTinyRegister(r)));
+			}
+		}
+		else if (opCode.equals("RET")) {
+			res.add(new TinyNode("unlnk", null, null));
+			res.add(new TinyNode("ret", null, null));
 		}
 		else {
 			
@@ -262,6 +331,9 @@ public class CodeGenerater{
 			case "WRITES" :
 				cmmd = "writes";
 				break;
+			case "LINK" :
+				cmmd = "link";
+				break;
 			default:
 				cmmd = "ERROR";
 				break;
@@ -269,6 +341,7 @@ public class CodeGenerater{
 		return cmmd;
 	}
 	private boolean isRegister(String str) {
+		if (str == null) return false;
 		return str.contains("$");
 	}	
 	public boolean isNumeric(String s) {  
