@@ -27,6 +27,10 @@ public class Symbol {
 		this.attr = attr;
 	}
 	
+	public String getAttr() {
+		return this.attr;
+	}
+	
 	public String getName(){
 		return this.name;
 	}

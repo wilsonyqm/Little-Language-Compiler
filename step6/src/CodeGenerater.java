@@ -20,16 +20,22 @@ public class CodeGenerater{
 		compareSet = new HashSet<>();
 		init_compareSet(compareSet);
     }
+	private int getTinyCount() {
+		return tinycount;
+	}
+	private void setTinyCount(int a) {
+		tinycount = a;
+	}
 	private void setparaNum(int a) {
 		paraNum = a;
 	}
 	private void setlocalVarNum(int a) {
 		localVarNum = a;
 	}
-	private void getparaNum() {
+	private int getparaNum() {
 		return paraNum;
 	}
-	private void getlocalVarNum() {
+	private int getlocalVarNum() {
 		return localVarNum;
 	}
 	private String getTinyRegister(String str) {
@@ -98,12 +104,14 @@ public class CodeGenerater{
 		convertListIRtoTiny(iRNodes, tinyNodes);
     	System.out.println(";tiny code");
 		for (int i = 0; i < symbols.size(); i++) {
-			if (symbols.get(i).getType().equals("STRING")) {
-				System.out.println("str " + symbols.get(i).getName() + " " + symbols.get(i).getValue());
-				// System.out.println("str " + symbols.get(i).getName() + "\"" + "\\" + "n" + "\"");
-			}
-			else {
-				System.out.println("var " + symbols.get(i).getName());
+			if (symbols.get(i).getAttr().equals("global")) {
+				if (symbols.get(i).getType().equals("STRING")) {
+					System.out.println("str " + symbols.get(i).getName() + " " + symbols.get(i).getValue());
+					// System.out.println("str " + symbols.get(i).getName() + "\"" + "\\" + "n" + "\"");
+				}
+				else {
+					System.out.println("var " + symbols.get(i).getName());
+				}
 			}
 		}
 		//start main function
