@@ -20,6 +20,9 @@ public class MicroIRListener extends MicroBaseListener{
 	
 //	private int registernum;
 	
+	private int localnum;
+	
+	private int paranum;
 	
 	MicroIRListener(){
 		this.tree = new SymbolTableTree();
@@ -30,6 +33,8 @@ public class MicroIRListener extends MicroBaseListener{
 		this.blocknum = 1;
 //		this.labelnum = 1;
 //		this.registernum = 1;
+		this.localnum = 1;
+		this.paranum = 1;
 	}
 	
 	//********************helper functions************************************
@@ -133,7 +138,23 @@ public class MicroIRListener extends MicroBaseListener{
 	private String getLabel(){
 		return "label"+labelnum++;
 		
+	}
+	
+	private String getLocal(){
+		return "$L"+localnum++;
+	}
+	
+	private String getPara(){
+		return "$P"+paranum++;
 	}	
+	
+	private void setLocal(){
+		this.localnum = 1;
+	}
+	
+	private void setPara(){
+		this.paranum = 1;
+	}
 	
 	private String lookupOpCode(String operator, String type) {
 		if (operator.equals("+")) {
@@ -198,6 +219,27 @@ public class MicroIRListener extends MicroBaseListener{
 		}
 		return sum;
 	}
+	
+	private String getSymbolAttr(SymbolTable table, String value) {
+		if (table == null)
+			return null;
+		String Attr = null;
+		if(table.getChild().size() == 0)
+		{
+			if(table.containsKey(value){
+				return table.get(value);
+			}
+			
+		}
+		
+		for (SymbolTable t : table.getChild()) {
+			Attr = getSymbolNum(t,value);
+			if (Attr != null)
+				break;
+		}
+		return Attr;
+	}
+	
 	//*******************************Listener functions*************************************
 	
 	@Override public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
@@ -223,14 +265,16 @@ public class MicroIRListener extends MicroBaseListener{
 		tree.currscope.addChild(table);
 		tree.enterscope();
 		int paraNum = 0;
+		setLocal(1);
+		setPara(1);
 		if (ctx.getChild(4) != null && !ctx.getChild(4).getText().equals("")) {
 			paraNum = ctx.getChild(4).getText().split(",").length;
-			func_addtype(ctx.getChild(4).getText(), table,"para");
+			func_addtype(ctx.getChild(4).getText(), table,getPara());
 		}
 		if (ctx.getChild(7) != null && ctx.getChild(7).getChild(0) != null) {
 			String str = ctx.getChild(7).getChild(0).getText();
 			if (str.length() == 0) return;
-			addtype(str.substring(0, str.length() - 1), table,"local");
+			addtype(str.substring(0, str.length() - 1), table,getLocal());
 		}
 		
 		Function function = new Function(table);
@@ -274,7 +318,7 @@ public class MicroIRListener extends MicroBaseListener{
 		String[] global_vars = ctx.getChild(4).getText().split(";");
 		for (int i = 0; i < global_vars.length; i++) {
 			String curr_val = global_vars[i];
-			addtype(curr_val, table,"local");
+			addtype(curr_val, table,getLocal());
 		}
 			
 	}
@@ -304,7 +348,7 @@ public class MicroIRListener extends MicroBaseListener{
 		String[] global_vars = ctx.getChild(1).getText().split(";");
 		for (int i = 0; i < global_vars.length; i++) {
 			String curr_val = global_vars[i];
-			addtype(curr_val, table,"local");
+			addtype(curr_val, table,getLocal());
 		}
 		
 	}
@@ -356,7 +400,7 @@ public class MicroIRListener extends MicroBaseListener{
 		String[] global_vars = ctx.getChild(8).getText().split(";");
 		for (int i = 0; i < global_vars.length; i++) {
 			String curr_val = global_vars[i];
-			addtype(curr_val, table,"local");
+			addtype(curr_val, table,getLocal());
 		}
 		
 	}
@@ -403,7 +447,7 @@ public class MicroIRListener extends MicroBaseListener{
 		String[] global_vars = ctx.getChild(4).getText().split(";");
 		for (int i = 0; i < global_vars.length; i++) {
 			String curr_val = global_vars[i];
-			addtype(curr_val, table,"local");
+			addtype(curr_val, table,getLocal());
 		}		
 	
 	}
@@ -433,7 +477,7 @@ public class MicroIRListener extends MicroBaseListener{
 		String[] global_vars = ctx.getChild(0).getText().split(";");
 		for (int i = 0; i < global_vars.length; i++) {
 			String curr_val = global_vars[i];
-			addtype(curr_val, table,"local");
+			addtype(curr_val, table,getLocal());
 		}		
 	}
 	
@@ -797,11 +841,17 @@ public class MicroIRListener extends MicroBaseListener{
 			}
 			else{
 				String primary = ctx.getChild(0).getText();
-			    String type = tree.checkType(primary);
+				String type = tree.checkType(primary);
+				String Attr = getSymbolAttr(table,primary);
+					
 			    if(!primary.matches("[a-zA-Z]+")){
 			    	String registerName = getFunction(ctx).getRegister();
 			    	String opCode = lookupStoreCode(type);
-			    	IRNode node = new IRNode(opCode,primary,null,registerName);
+			    	if(Attr == null)
+			    		IRNode node = new IRNode(opCode,primary,null,registerName);
+			    	else
+			    		IRNode node = new IRNode(opCode,Attr,null,registerName);
+			    		
 			    	if(getValue(ctx) == null || getValue(ctx).getNote()!="Incr_stmt")
 						codeGenerater.addIRNode(node);
 					else

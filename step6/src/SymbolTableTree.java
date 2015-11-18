@@ -39,6 +39,8 @@ public class SymbolTableTree{
 		return null;
 	}
 	
+	
+	
 	public void printAll(SymbolTable table) {
 		if (table == null)
 		return;

@@ -26,11 +26,4 @@ public class Function{
 		return "$T"+registernum++; 
 	}
 	
-	private String getLocal(){
-		return "$L"+localVarNum++;
-	}
-	
-	private String getPara(){
-		return "$P"+paraNum++;
-	}
 }
