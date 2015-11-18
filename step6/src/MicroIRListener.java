@@ -9,6 +9,10 @@ public class MicroIRListener extends MicroBaseListener{
     SymbolTableTree tree;
       
     ParseTreeProperty<NodeInfo> parseTreeValue;
+    
+    ParseTreeProperty<Function> parseTreeFunction;
+    
+    ArrayList<Function> functionList;
      
 	private int blocknum;
 	
@@ -19,8 +23,10 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	MicroIRListener(){
 		this.tree = new SymbolTableTree();
-		this.codeGenerater = new CodeGenerater();
+//		this.codeGenerater = new CodeGenerater();
+		this.functionList = new ArrayList<Function>();
 		this.parseTreeValue = new ParseTreeProperty<NodeInfo>();
+		this.parseTreeFunction = new ParseTreeProperty<Function>();
 		this.blocknum = 1;
 		this.labelnum = 1;
 		this.registernum = 1;
@@ -76,11 +82,21 @@ public class MicroIRListener extends MicroBaseListener{
 	private void annotateTree(ParseTree ctx, String note){
 		if(ctx == null || ctx.getText() == "")
 			return;
-		NodeInfo node = new NodeInfo(null,null,null,null,"Incr_stmt");
+		NodeInfo node = new NodeInfo(null,null,null,null,note);
 		setValue(ctx,node);
 		int num = ctx.getChildCount();
 		for(int i=0; i<num;i++){
 			annotateTree(ctx.getChild(i), note);
+		}
+	}
+	
+	private void annotateTreeFunc(ParseTree ctx, Function function){
+		if(ctx == null || ctx.getText() == "")
+			return;
+		setFunction(ctx,function);
+		int num = ctx.getChildCount();
+		for(int i=0; i<num; i++){
+			annotateTreeFunc(ctx.getChild(i),function);
 		}
 	}
 	
@@ -92,6 +108,16 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	private void setValue(ParseTree ctx, NodeInfo value){
 		parseTreeValue.put(ctx,value);
+	}
+	
+	private Function getFunction(ParseTree ctx) {
+		if(ctx == null)
+			return null;
+		return parseTreeFunction.get(ctx);
+	}
+	
+	private void setFunction(ParseTree ctx, Function function){
+		parseTreeFunction.put(ctx,function);
 	}
 	
 		
@@ -197,6 +223,10 @@ public class MicroIRListener extends MicroBaseListener{
 			if (str.length() == 0) return;
 			addtype(str.substring(0, str.length() - 1), table);
 		}
+		
+		Function function = new Function(table);
+		annotateTreeFunction(ctx, function);
+		
 	}
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
 	
@@ -234,7 +264,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	@Override public void exitIf_stmt(MicroParser.If_stmtContext ctx) {
 //	System.out.println("exitIf_stmt");
-	
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		tree.exitscope();	
 		NodeInfo if_stmt = getValue(ctx);
 		String opCode = if_stmt.getOpCode();
@@ -267,7 +297,7 @@ public class MicroIRListener extends MicroBaseListener{
 		
 		if(ctx.getChild(0) == null)
 			return;
-		
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		NodeInfo else_part = getValue(ctx);
 		String opCode = else_part.getOpCode();
 		String label = else_part.getBranch();
@@ -315,6 +345,7 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 	@Override public void exitFor_stmt(MicroParser.For_stmtContext ctx) {
 //	System.out.println("exitFor_stmt");
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		codeGenerater.addIncrToIR();
 		codeGenerater.dropIncrArray();
 		
@@ -363,7 +394,8 @@ public class MicroIRListener extends MicroBaseListener{
 	@Override public void exitAug_if_stmt(MicroParser.Aug_if_stmtContext ctx) { 
 //	System.out.println("exitAug_if_stmt");
 	
-		tree.exitscope();		
+		tree.exitscope();
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();		
 		NodeInfo if_stmt = getValue(ctx);
 		String opCode = if_stmt.getOpCode();
 		String label = if_stmt.getBranch();
@@ -393,7 +425,7 @@ public class MicroIRListener extends MicroBaseListener{
 		
 		if(ctx.getChild(0) == null)
 			return;
-		
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		NodeInfo else_part = getValue(ctx);
 		String opCode = else_part.getOpCode();
 		String label = else_part.getBranch();
@@ -407,6 +439,7 @@ public class MicroIRListener extends MicroBaseListener{
 //	System.out.println("exitStmt_list");
 			if(getValue(ctx) == null)
 				return;
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			String opCodeArray = getValue(ctx).getOpCode();
 			String labelArray = getValue(ctx).getBranch();
 			String[] opCodes = opCodeArray.split(",");
@@ -425,7 +458,7 @@ public class MicroIRListener extends MicroBaseListener{
 	 
 	@Override public void exitAug_stmt(MicroParser.Aug_stmtContext ctx) {
 //	System.out.println("exitAug_stmt");
-	
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			if(ctx.getText().equals("CONTINUE;")){
 				String label = getValue(getNearestFor(ctx).getChild(6)).getBranch();
 				IRNode node = new IRNode("JUMP",null,null,label);
@@ -446,6 +479,7 @@ public class MicroIRListener extends MicroBaseListener{
 			
 			if(getValue(ctx) == null)
 				return;
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			String opCodeArray = getValue(ctx).getOpCode();
 			String labelArray = getValue(ctx).getBranch();
 			String[] opCodes = opCodeArray.split(",");
@@ -464,6 +498,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	@Override public void enterIncr_stmt(MicroParser.Incr_stmtContext ctx) {
 // System.out.println("enterIncr_stmt");
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
  			codeGenerater.createIncrArray();
  			int num = ctx.getChildCount();
  			for(int i=0;i<num;i++){
@@ -474,7 +509,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	@Override public void exitInit_stmt(MicroParser.Init_stmtContext ctx) {
 //	System.out.println("exitInit_stmt");
-			
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			NodeInfo init_stmt = getValue(ctx);
 			String opCode = init_stmt.getOpCode();
 			String label = init_stmt.getBranch();
@@ -492,7 +527,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	@Override public void exitCond(MicroParser.CondContext ctx) {
 //	System.out.println("exitCond");
-	
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			String oprand1 = getValue(ctx.getChild(0)).getTemp();
 			String oprand2 = getValue(ctx.getChild(2)).getTemp();
 			String compOp = lookupCompCode(getValue(ctx.getChild(1)).getOpCode());
@@ -506,6 +541,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
 			if(ctx.getChild(2)==null || ctx.getChild(2).getText()=="")
 				return;
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			String[] ids = ctx.getChild(2).getText().split(",");
 			for(int i=0; i<ids.length; i++){
 				String type = tree.checkType(ids[i]);
@@ -531,6 +567,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
 			if(ctx.getChild(2) == null || ctx.getChild(2).getText()=="")
 				return;
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			String[] ids = ctx.getChild(2).getText().split("\\s*,\\s*");
 			for(int i=0; i<ids.length; i++){
 				String type = tree.checkType(ids[i]);
@@ -556,7 +593,7 @@ public class MicroIRListener extends MicroBaseListener{
 			
 	@Override public void exitAssign_expr(MicroParser.Assign_exprContext ctx) {
 //	System.out.println("exitAssign_expr");
-	
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			String result = ctx.getChild(0).getText();
 			String type = tree.checkType(result);
 
@@ -600,7 +637,7 @@ public class MicroIRListener extends MicroBaseListener{
 	    NodeInfo factor = getValue(ctx.getChild(1));
 		String factorType = factor.getType();
 		String factorText = factor.getTemp();
-		
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		 
 		if(expr_prefix != null ){
 		
@@ -630,6 +667,7 @@ public class MicroIRListener extends MicroBaseListener{
 		if(ctx.getText() == ""){
 			return;
 		}	
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			NodeInfo expr_prefix = getValue(ctx.getChild(0));
 			NodeInfo factor = getValue(ctx.getChild(1));
 			String factorType = factor.getType();
@@ -668,7 +706,7 @@ public class MicroIRListener extends MicroBaseListener{
 			
 			String postfixType = postfix_expr.getType();
 			String postfixText = postfix_expr.getTemp();
-			
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			if(factor_prefix == null ){
 				NodeInfo factor = new NodeInfo(null,postfixText,postfixType,null);
 				setValue(ctx,factor);
@@ -694,6 +732,7 @@ public class MicroIRListener extends MicroBaseListener{
 		if(ctx.getText() == ""){
 			return;
 		}	 
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			NodeInfo factor_prefix = getValue(ctx.getChild(0));
 			NodeInfo postfix_expr = getValue(ctx.getChild(1));
 			String postfixType = postfix_expr.getType();
@@ -733,6 +772,7 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	@Override public void exitPrimary(MicroParser.PrimaryContext ctx){
 //	System.out.println("exitPrimary");
+			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			NodeInfo expr = getValue(ctx.getChild(1));
 			if(expr != null ){
 				setValue(ctx,expr);
