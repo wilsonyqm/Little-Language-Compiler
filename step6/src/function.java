@@ -7,7 +7,7 @@ public class Function{
 	int localVarNum;
 	int registernum;
 	
-	public function(SymbolTalbe table){
+	public Function(SymbolTable table){
 		this.codeGenerater = new CodeGenerater();
 		this.symbolTable = table;
 		this.registernum = 1;
@@ -21,7 +21,7 @@ public class Function{
 		return this.symbolTable;
 	}
 	
-	private String getRegister(){
+	public String getRegister(){
 			
 		return "$T"+registernum++; 
 	}

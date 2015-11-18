@@ -34,6 +34,7 @@ public class SymbolTableTree{
 		while(scope!=null){
 			if(scope.checkType(value)!=null)
 				return scope.checkType(value);
+			
 			scope = scope.parent;
 		}
 		return null;
@@ -52,6 +53,7 @@ public class SymbolTableTree{
 		}
 		}
 	}
+
 	public ArrayList<Symbol> getAllsymbols(SymbolTable table) {
 		ArrayList<Symbol> res = new ArrayList<>();
 		if (table == null)

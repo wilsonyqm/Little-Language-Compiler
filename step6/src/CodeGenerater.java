@@ -20,22 +20,22 @@ public class CodeGenerater{
 		compareSet = new HashSet<>();
 		init_compareSet(compareSet);
     }
-	private int getTinyCount() {
+	public int getTinyCount() {
 		return tinycount;
 	}
-	private void setTinyCount(int a) {
+	public void setTinyCount(int a) {
 		tinycount = a;
 	}
-	private void setparaNum(int a) {
+	public void setparaNum(int a) {
 		paraNum = a;
 	}
-	private void setlocalVarNum(int a) {
+	public void setlocalVarNum(int a) {
 		localVarNum = a;
 	}
-	private int getparaNum() {
+	public int getparaNum() {
 		return paraNum;
 	}
-	private int getlocalVarNum() {
+	public int getlocalVarNum() {
 		return localVarNum;
 	}
 	private String getTinyRegister(String str) {
@@ -100,8 +100,7 @@ public class CodeGenerater{
     		System.out.println(";"+iRNodes.get(i).toString());
     	}	
     }
-    public void printTinyNodes(){
-		convertListIRtoTiny(iRNodes, tinyNodes);
+	public void printGlobalTiny() {
     	System.out.println(";tiny code");
 		for (int i = 0; i < symbols.size(); i++) {
 			if (symbols.get(i).getAttr().equals("global")) {
@@ -114,6 +113,10 @@ public class CodeGenerater{
 				}
 			}
 		}
+	}
+    public void printTinyNodes(){
+		convertListIRtoTiny(iRNodes, tinyNodes);
+    	
 		//start main function
 		System.out.println("push");
 		System.out.println("push r0");
@@ -128,10 +131,10 @@ public class CodeGenerater{
     	}	
     }
 	private void convertListIRtoTiny(ArrayList<IRNode> irlist, ArrayList<TinyNode> tinylist) {
+		tinylist.add(new TinyNode("sys halt", null, null));
 		for (IRNode irnode : irlist) {
 			tinylist.addAll(convertNodeIRtoTiny(irnode));
 		}
-		tinylist.add(new TinyNode("sys halt", null, null));
 	}
 	
 	private ArrayList<TinyNode> convertNodeIRtoTiny(IRNode irnode) {
@@ -197,7 +200,7 @@ public class CodeGenerater{
 			res.add(new TinyNode(cmmd, null, r));
 		}
 		else if (opCode.equals("LINK")) {
-			res.add(new TinyNode(cmmd, null, localVarNum));
+			res.add(new TinyNode(cmmd, null, "" + localVarNum));
 		}
 		else if (opCode.equals("PUSH")) {
 			if (isRegister(r)) {

@@ -82,8 +82,10 @@ public class SymbolTable{
 		return res;
 	}
 	public String checkType(String name){
-		if(table.containsKey(name))
+		if(table.containsKey(name)) {
+			System.out.println(table.get(name).getName());
 			return table.get(name).getType();
+		}
 		return null;
 	}
 }
