@@ -190,7 +190,14 @@ public class MicroIRListener extends MicroBaseListener{
 			
 	}
 	
-	
+	private int getSymbolNum(SymbolTable table) {
+		if (table == null || table.getChild().size() == 0) return 0;
+		int sum = table.getTable().size();
+		for (SymbolTable t : table.getChild()) {
+			sum += getSymbolNum(t);
+		}
+		return sum;
+	}
 	//*******************************Listener functions*************************************
 	
 	@Override public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
@@ -215,7 +222,9 @@ public class MicroIRListener extends MicroBaseListener{
 		SymbolTable table = new SymbolTable(ctx.getChild(2).getText());
 		tree.currscope.addChild(table);
 		tree.enterscope();
+		int paraNum = 0;
 		if (ctx.getChild(4) != null && !ctx.getChild(4).getText().equals("")) {
+			paraNum = ctx.getChild(4).getText().split(",").length;
 			func_addtype(ctx.getChild(4).getText(), table);
 		}
 		if (ctx.getChild(7) != null && ctx.getChild(7).getChild(0) != null) {
@@ -226,10 +235,14 @@ public class MicroIRListener extends MicroBaseListener{
 		
 		Function function = new Function(table);
 		annotateTreeFunction(ctx, function);
-		
+		CodeGenerater codeGenerater = function.getCodeGenerater();
+		codeGenerater.setparaNum(paraNum);
 	}
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
-	
+		int symbolnum = getSymbolNum(tree.root);
+		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
+		codeGenerater.setlocalVarNum(symbolnum);
+		
 		tree.exitscope();
 	}
 	

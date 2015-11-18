@@ -8,6 +8,8 @@ public class CodeGenerater{
 	private int tinycount;
 	private HashMap<String, String> regMap;
 	private HashSet<String> compareSet;
+	private int paraNum;
+	private int localVarNum;
     public CodeGenerater(){
     	iRNodes = new ArrayList<IRNode>();
     	tinyNodes = new ArrayList<TinyNode>();
@@ -18,6 +20,18 @@ public class CodeGenerater{
 		compareSet = new HashSet<>();
 		init_compareSet(compareSet);
     }
+	private void setparaNum(int a) {
+		paraNum = a;
+	}
+	private void setlocalVarNum(int a) {
+		localVarNum = a;
+	}
+	private void getparaNum() {
+		return paraNum;
+	}
+	private void getlocalVarNum() {
+		return localVarNum;
+	}
 	private String getTinyRegister(String str) {
 		if (isRegister(str) && regMap.containsKey(str)) {
 			return regMap.get(str);

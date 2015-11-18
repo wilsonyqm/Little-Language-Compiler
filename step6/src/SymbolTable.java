@@ -24,7 +24,9 @@ public class SymbolTable{
 		children.add(child);
 		child.parent = this;
 	}
-	
+	public ArrayList<SymbolTable> getChild() {
+		return this.children;
+	}
 	public void addEntry(Symbol entry) throws IllegalArgumentException{
 		String name = entry.getName();
 		String type = entry.getType();
