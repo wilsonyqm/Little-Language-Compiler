@@ -32,7 +32,7 @@ public class SymbolTable{
 		String type = entry.getType();
 		String value= entry.getValue();
 		if(table.containsKey(name)){
-			throw new IllegalArgumentException("DECLARATION ERROR "+name);
+			throw new IllegalArgumentException(scope+" DECLARATION ERROR "+name);
 		}
 		else{
 			
@@ -41,8 +41,7 @@ public class SymbolTable{
 			}
 			
 			table.put(name,entry);	
-			
-			
+					
 		}
 	}
 	
@@ -65,12 +64,15 @@ public class SymbolTable{
 			String name = currentSymbol.getName();
 			String type = currentSymbol.getType();
 			String value = currentSymbol.getValue();
+			String attr = currentSymbol.getAttr();
 			
 			if(type == "STRING")
-				System.out.println("name " +name+ " type " +type+" value "+value);
+				System.out.println("name " +name+ " type " +type+" value "+value+" attr "+attr);
 			else
-				System.out.println("name "+name+" type "+type);
+				System.out.println("name "+name+" type "+type+" attr "+attr);
 		}
+		if(parent!=null)
+		System.out.println("parent is "+ parent.scope);
 	}
 	public ArrayList<Symbol> getSymbols() {
 		Iterator<Symbol> symbols = table.values().iterator();
@@ -83,7 +85,7 @@ public class SymbolTable{
 	}
 	public String checkType(String name){
 		if(table.containsKey(name)) {
-			System.out.println(table.get(name).getName());
+//			System.out.println(table.get(name).getName());
 			return table.get(name).getType();
 		}
 		return null;

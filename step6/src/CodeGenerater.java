@@ -95,7 +95,7 @@ public class CodeGenerater{
     }
     
     public void printIRNodes(){
-    	System.out.println(";IR code");
+   // 	System.out.println(";IR code");
     	for(int i=0; i<iRNodes.size();i++){
     		System.out.println(";"+iRNodes.get(i).toString());
     	}	

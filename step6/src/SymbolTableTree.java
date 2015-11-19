@@ -33,8 +33,7 @@ public class SymbolTableTree{
 		SymbolTable scope = currscope;
 		while(scope!=null){
 			if(scope.checkType(value)!=null)
-				return scope.checkType(value);
-			
+				return scope.checkType(value);	
 			scope = scope.parent;
 		}
 		return null;
@@ -43,8 +42,10 @@ public class SymbolTableTree{
 	
 	
 	public void printAll(SymbolTable table) {
-		if (table == null)
+		if (table == null){
+		System.out.println("table is null");
 		return;
+		}
 		table.printTable();
 		if(table.children!=null){
 		for(int i=0;i<table.children.size();i++){
