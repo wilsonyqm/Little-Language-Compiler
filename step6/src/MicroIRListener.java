@@ -344,6 +344,7 @@ public class MicroIRListener extends MicroBaseListener{
 		
 		int symbolnum = getSymbolNum(tree.root);
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
+		codeGenerater.addReturn();
 		codeGenerater.setlocalVarNum(symbolnum);
 		functionList.add(getFunction(ctx));
 		tree.exitscope();
@@ -768,6 +769,7 @@ public class MicroIRListener extends MicroBaseListener{
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		codeGenerater.addIRNode(new IRNode("PUSH", null, null, ""));
 		codeGenerater.addIRNode(new IRNode("PUSH", null, null, expr.getTemp()));
+		codeGenerater.popIRNode();
 		
 	}
 	@Override public void exitExpr_list_tail(MicroParser.Expr_list_tailContext ctx) {
@@ -775,7 +777,7 @@ public class MicroIRListener extends MicroBaseListener{
 		if (ctx.getText().length() == 0) return;
 		NodeInfo  expr = getValue(ctx.getChild(1));
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
-		codeGenerater.addIRNode(new IRNode("PUSH", null, null, expr.getTemp()));
+		codeGenerater.pushIRNode(new IRNode("PUSH", null, null, expr.getTemp()));
 	}
 	@Override public void exitCall_expr(MicroParser.Call_exprContext ctx) {
 //		System.out.println("exitCall");
@@ -784,8 +786,7 @@ public class MicroIRListener extends MicroBaseListener{
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		String reg = getFunction(ctx).getRegister();
 		codeGenerater.addIRNode(new IRNode("JSR", null, null, id));
-		codeGenerater.addIRNode(new IRNode("POP", null, null, ""));
-		codeGenerater.addIRNode(new IRNode("POP", null, null, ""));
+		codeGenerater.popopIRNode();
 		codeGenerater.addIRNode(new IRNode("POP", null, null, reg));
 	    NodeInfo expr = new NodeInfo(null, reg, funcType.get(id), null);
 	    setValue(ctx,expr);

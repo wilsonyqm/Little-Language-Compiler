@@ -10,16 +10,44 @@ public class CodeGenerater{
 	private HashSet<String> compareSet;
 	private int paraNum;
 	private int localVarNum;
+	private Stack<IRNode> paraStack;
+	private int stackSize;
     public CodeGenerater(){
     	iRNodes = new ArrayList<IRNode>();
     	tinyNodes = new ArrayList<TinyNode>();
     	incrNodes = new ArrayList<ArrayList<IRNode>>();
+    	paraStack = new Stack<IRNode>();
+    	stackSize = 0;
 		symbols = new ArrayList<>();
 		tinycount = 0;
 		regMap = new HashMap<>();
 		compareSet = new HashSet<>();
 		init_compareSet(compareSet);
     }
+    
+    public void addReturn(){
+    	IRNode node = iRNodes.get(iRNodes.size()-1);
+    	if(node.getOpCode().equals("LABEL"))
+    		iRNodes.add(new IRNode("RET",null,null,""));
+    }
+    public void pushIRNode(IRNode node){
+    	paraStack.push(node);	
+    	stackSize ++;
+    }
+    
+    public void popIRNode(){
+    	while(!paraStack.isEmpty()){
+    		IRNode node = paraStack.pop();
+    		iRNodes.add(node);
+    	}
+    }
+    
+    public void popopIRNode(){
+    	for(int i = 0; i<= stackSize; i++)
+    		iRNodes.add(new IRNode("POP",null,null,""));
+    	stackSize = 0;
+    }
+    
 	public int getTinyCount() {
 		return tinycount;
 	}
