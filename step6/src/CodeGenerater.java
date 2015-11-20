@@ -147,17 +147,18 @@ public class CodeGenerater{
 				}
 			}
 		}
-	}
-    public void printTinyNodes(){
-		convertListIRtoTiny(iRNodes, tinyNodes);
-    	
-		//start main function
 		System.out.println("push");
 		System.out.println("push r0");
 		System.out.println("push r1");
 		System.out.println("push r2");
 		System.out.println("push r3");
 		System.out.println("jsr main");
+	}
+    public void printTinyNodes(){
+		convertListIRtoTiny(iRNodes, tinyNodes);
+    	
+		//start main function
+
 						
 		System.out.println();
     	for(int i=0; i<tinyNodes.size();i++){
