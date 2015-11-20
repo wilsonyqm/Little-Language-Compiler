@@ -131,13 +131,19 @@ public class CodeGenerater{
 	public void printGlobalTiny() {
     	System.out.println(";tiny code");
 		for (int i = 0; i < symbols.size(); i++) {
-			if (symbols.get(i).getAttr().equals("global")) {
+			if (symbols.get(i).getAttr()== null) {
 				if (symbols.get(i).getType().equals("STRING")) {
 					System.out.println("str " + symbols.get(i).getName() + " " + symbols.get(i).getValue());
 					// System.out.println("str " + symbols.get(i).getName() + "\"" + "\\" + "n" + "\"");
 				}
-				else {
-					System.out.println("var " + symbols.get(i).getName());
+				else if (symbols.get(i).getType().equals("FLOAT")){
+					System.out.println("float " + symbols.get(i).getName());
+				}
+				else if (symbols.get(i).getType().equals("INT")){
+					System.out.println("int " + symbols.get(i).getName());
+				}
+				else{
+					System.out.println("Error type");
 				}
 			}
 		}
