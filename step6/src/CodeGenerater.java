@@ -12,6 +12,7 @@ public class CodeGenerater{
 	private int localVarNum;
 	private Stack<IRNode> paraStack;
 	private int stackSize;
+	private boolean haspush;
     public CodeGenerater(){
     	iRNodes = new ArrayList<IRNode>();
     	tinyNodes = new ArrayList<TinyNode>();
@@ -23,6 +24,7 @@ public class CodeGenerater{
 		regMap = new HashMap<>();
 		compareSet = new HashSet<>();
 		init_compareSet(compareSet);
+		haspush = false;
     }
     
     public void addReturn(){
@@ -74,8 +76,6 @@ public class CodeGenerater{
 			String tmp;
 			if (str.charAt(1) == 'L') {
 				tmp = "$-" + str.substring(2);
-				regMap.put(str, tmp);
-				return tmp;
 			}
 			else if (str.charAt(1) == 'P') {
 				tmp = "$" + (6 + paraNum - Integer.parseInt(str.substring(2)));
@@ -94,6 +94,10 @@ public class CodeGenerater{
 			regMap.put(str, tmp);
 			return tmp;
 		}
+	}
+	private String getTinyRegister() {
+		String tmp = "r" + tinycount++;
+		return tmp;
 	}
     public void setSymbols(ArrayList<Symbol> list) {
     	symbols.addAll(list);
@@ -153,6 +157,8 @@ public class CodeGenerater{
 		System.out.println("push r2");
 		System.out.println("push r3");
 		System.out.println("jsr main");
+		System.out.println("sys halt");
+		
 	}
     public void printTinyNodes(){
 		convertListIRtoTiny(iRNodes, tinyNodes);
@@ -164,9 +170,9 @@ public class CodeGenerater{
     	for(int i=0; i<tinyNodes.size();i++){
     		System.out.println(tinyNodes.get(i).toString());
     	}	
+		
     }
 	private void convertListIRtoTiny(ArrayList<IRNode> irlist, ArrayList<TinyNode> tinylist) {
-		tinylist.add(new TinyNode("sys halt", null, null));
 		for (IRNode irnode : irlist) {
 			tinylist.addAll(convertNodeIRtoTiny(irnode));
 		}
@@ -180,10 +186,16 @@ public class CodeGenerater{
 		String r = irnode.getResult();
 		String s1, s2;
 		String cmmd = getCmmd(opCode);
+		
 		if (opCode.equals("STOREI") || opCode.equals("STOREF")) {
 			if (isRegister(irnode.getOperand1())) {
 				s1 = getTinyRegister(irnode.getOperand1());
-				s2 = irnode.getResult();
+				if (isRegister(r) && !(r.equals("$R") && op1.startsWith("$T"))) {
+					s2 = getTinyRegister(r);
+				}
+				else {
+					s2 = r;
+				}
 			}
 			else if (isRegister(r)){
 				s2 = getTinyRegister(irnode.getResult());
@@ -195,16 +207,30 @@ public class CodeGenerater{
 				s1 = newReg;
 				s2 = r;
 			}
-			res.add(new TinyNode("move", s1, s2));
+			if (r.equals("$R") && !op1.startsWith("$L")) {
+				res.add(new TinyNode("move", s1, getTinyRegister(r + "R")));
+			}
+			else {
+				res.add(new TinyNode("move", s1, s2));
+				if (r.equals("$R")) {
+					res.add(new TinyNode("move", s2, getTinyRegister(r + "R")));
+				}
+			}
 		}
 		else if (opCode == null) {
 			//doing nothing
 		}
 		else if (opCode.equals("WRITEF") || opCode.equals("WRITEI")) {
-			res.add(new TinyNode(cmmd, null, r));
+			if (!isRegister(r))
+				res.add(new TinyNode(cmmd, null, r));
+			else 
+				res.add(new TinyNode(cmmd, null, getTinyRegister(r)));
 		}
 		else if (opCode.equals("READI") || opCode.equals("READF") || opCode.equals("WRITES")) {
-			res.add(new TinyNode("sys", cmmd, r));
+			if (!isRegister(r))
+				res.add(new TinyNode("sys", cmmd, r));
+			else 
+				res.add(new TinyNode("sys", cmmd, getTinyRegister(r)));
 		}
 		else if (compareSet.contains(opCode)) {
 			String newReg = getTinyRegister(op2);
@@ -213,14 +239,24 @@ public class CodeGenerater{
 			}
 			// Get Op1 Type
 			String op1Type = "";
+
 			for (int i = 0; i < symbols.size(); i++) {
-				if (symbols.get(i).getName().equals(op1)) {
+				if (symbols.get(i).getName().equals(op1) || symbols.get(i).getAttr().equals(op1)) {
 					op1Type = symbols.get(i).getType();
+					break;
 				}
 			}
-			if (op1Type.equals("")) System.out.println("ERROR, NOT FIND SYMBOL");
 			
+			if (op1Type.equals("")) System.out.println("ERROR, NOT FIND SYMBOL");
+			if (isRegister(op1)) {
+				op1 = getTinyRegister(op1);
+			}
 			//Insert Type compare 
+			if (!op2.startsWith("$T")) {
+				String reg2 = getTinyRegister(op2);
+				newReg = getTinyRegister();
+				res.add(new TinyNode("move", reg2, newReg));
+			}
 			if (op1Type.equals("INT")) {
 				res.add(new TinyNode("cmpi", op1, newReg));
 			}
@@ -239,25 +275,30 @@ public class CodeGenerater{
 		}
 		else if (opCode.equals("PUSH")) {
 			if (isRegister(r)) {
-				res.add(new TinyNode("push", null, null));
+				if (!haspush)	
+					res.add(new TinyNode("push", null, null));
+				haspush = true;
 				res.add(new TinyNode("push", null, getTinyRegister(r)));
-				res.add(new TinyNode("push", null, "r0"));
-				res.add(new TinyNode("push", null, "r1"));
-				res.add(new TinyNode("push", null, "r2"));
-				res.add(new TinyNode("push", null, "r3"));
 			}
 		}
 		else if (opCode.equals("JSR")) {
+			res.add(new TinyNode("push", null, "r0"));
+			res.add(new TinyNode("push", null, "r1"));
+			res.add(new TinyNode("push", null, "r2"));
+			res.add(new TinyNode("push", null, "r3"));
 			res.add(new TinyNode("jsr", null, r));
+			res.add(new TinyNode("pop", null, "r3"));
+			res.add(new TinyNode("pop", null, "r2"));
+			res.add(new TinyNode("pop", null, "r1"));
+			res.add(new TinyNode("pop", null, "r0"));
 		}
 		else if (opCode.equals("POP")) {
 			if (isRegister(r)) {
-				res.add(new TinyNode("pop", null, "r3"));
-				res.add(new TinyNode("pop", null, "r2"));
-				res.add(new TinyNode("pop", null, "r1"));
-				res.add(new TinyNode("pop", null, "r0"));
-				res.add(new TinyNode("pop", null, null));
 				res.add(new TinyNode("pop", null, getTinyRegister(r)));
+			}
+			else {
+				res.add(new TinyNode("pop", null, null));
+				haspush = false;
 			}
 		}
 		else if (opCode.equals("RET")) {
@@ -265,7 +306,14 @@ public class CodeGenerater{
 			res.add(new TinyNode("ret", null, null));
 		}
 		else {
-			
+			if (isRegister(op1) && isRegister(op2) && isRegister(r)) {
+				s1 = getTinyRegister(op1);
+				s2 = getTinyRegister(op2);
+				String newreg = getTinyRegister(r);
+				res.add(new TinyNode("move", s1, newreg));
+				res.add(new TinyNode(cmmd, s2, newreg));
+				return res;
+			}
 			if (isRegister(op1) && isRegister(op2)) {
 				s1 = getTinyRegister(op2);
 				s2 = getTinyRegister(op1);

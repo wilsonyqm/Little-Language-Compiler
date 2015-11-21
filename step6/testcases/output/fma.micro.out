@@ -62,42 +62,39 @@ push r1
 push r2
 push r3
 jsr main
-
 sys halt
+
 label add
-link 11
-addr $6 $7
-move $7 $L1
-move $-1 $R
+link 1
+move $7 r0
+addr $6 r0
+move r0 $-1
+move $-1 r1
+move r1 $8
 unlnk
 ret
 
-sys halt
 label multiply
-link 14
-mulr $6 $7
-move $7 $L1
-move $-1 $R
+link 1
+move $7 r2
+mulr $6 r2
+move r2 $-1
+move $-1 r3
+move r3 $8
 unlnk
 ret
 
-sys halt
 label main
-link 19
+link 5
 sys writes intro
 sys writes first
-sys readr $L1
+sys readr $-1
 sys writes second
-sys readr $L2
+sys readr $-2
 sys writes third
-sys readr $L3
+sys readr $-3
 push
 push $-1
-push r0
-push r1
-push r2
-push r3
-push
 push $-2
 push r0
 push r1
@@ -109,15 +106,11 @@ pop r2
 pop r1
 pop r0
 pop
-pop r0
-move r0 $L5
+pop
+pop r4
+move r4 $-5
 push
 push $-5
-push r0
-push r1
-push r2
-push r3
-push
 push $-3
 push r0
 push r1
@@ -129,17 +122,19 @@ pop r2
 pop r1
 pop r0
 pop
-pop r1
-move r1 $L4
-sys writer $L1
+pop
+pop r5
+move r5 $-4
+sys writer $-1
 sys writes star
-sys writer $L2
+sys writer $-2
 sys writes plus
-sys writer $L3
+sys writer $-3
 sys writes equal
-sys writer $L4
+sys writer $-4
 sys writes eol
-move 0 r2
-move r2 $R
+move 0 r6
+move r6 $6
 unlnk
 ret
+end

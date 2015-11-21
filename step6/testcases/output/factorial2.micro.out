@@ -62,24 +62,24 @@ push r1
 push r2
 push r3
 jsr main
-ERROR, NOT FIND SYMBOL
-
 sys halt
+
 label factorial
-link 5
+link 2
 move 1 r0
-cmpr $P1 r0
+cmpi $6 r0
 jne label1
 move 1 r1
-move r1 $R
+move r1 $7
 unlnk
 ret
 jmp label2
 label label1
 move 1 r2
-subi r2 $6
+move $6 r3
+subi r2 r3
 push
-push $6
+push r3
 push r0
 push r1
 push r2
@@ -90,32 +90,31 @@ pop r2
 pop r1
 pop r0
 pop
-pop r3
-move r3 $L2
-muli $6 $-2
-move $-2 $L1
+pop r4
+move r4 $-2
+move $-2 r5
+muli $6 r5
+move r5 $-1
 jmp label2
 label label2
-move $-1 $R
+move $-1 r6
+move r6 $7
 unlnk
 ret
-ERROR, NOT FIND SYMBOL
-ERROR, NOT FIND SYMBOL
 
-sys halt
 label main
-link 7
+link 2
 sys writes input
-sys readi $L1
-move 1 r4
-cmpr $L1 r4
+sys readi $-1
+move 1 r7
+cmpi $-1 r7
 jne label3
-move 1 r5
-move r5 $L2
+move 1 r8
+move r8 $-2
 jmp label4
 label label3
-move 1 r6
-cmpr $L1 r6
+move 1 r9
+cmpi $-1 r9
 jle label5
 push
 push $-1
@@ -129,19 +128,20 @@ pop r2
 pop r1
 pop r0
 pop
-pop r7
-move r7 $L2
+pop r10
+move r10 $-2
 jmp label6
 label label5
-move 0 r8
-move r8 $L2
+move 0 r11
+move r11 $-2
 jmp label6
 label label6
 jmp label4
 label label4
-sys writei $L2
+sys writei $-2
 sys writes eol
-move 0 r9
-move r9 $R
+move 0 r12
+move r12 $6
 unlnk
 ret
+end

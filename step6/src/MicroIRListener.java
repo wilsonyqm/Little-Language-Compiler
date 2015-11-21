@@ -232,10 +232,19 @@ public class MicroIRListener extends MicroBaseListener{
 	
 	private int getSymbolNum(SymbolTable table) {
 		if (table == null) return 0;
-		int sum = table.getTable().size();
+		int sum = 0;
+		for (Symbol s : table.getSymbols()) {
+			if (s.getAttr() != null && s.getAttr().startsWith("$L", 0)) {
+				sum++;
+			}
+		}
 		if (table.getChild().size() == 0) return sum;
 		for (SymbolTable t : table.getChild()) {
-			sum += getSymbolNum(t);
+			for (Symbol s : t.getSymbols()) {
+				if (s.getAttr() != null && s.getAttr().startsWith("$L", 0)) {
+					sum++;
+				}
+			}
 		}
 		return sum;
 	}
@@ -283,10 +292,12 @@ public class MicroIRListener extends MicroBaseListener{
 		cg.printGlobalTiny();
 		for (Function f : functionList) {
 			CodeGenerater cg1 = f.getCodeGenerater();
+			cg1.setSymbols(tree.getAllsymbols(f.getTable()));
 			cg1.setTinyCount(tiny);
 			cg1.printTinyNodes();
 			tiny = cg1.getTinyCount();
 		}
+		System.out.println("end");
 
 	}
 	// @Override public void enterFunc_body(MicroParser.Func_bodyContext ctx) {
@@ -342,7 +353,7 @@ public class MicroIRListener extends MicroBaseListener{
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
 	//	System.out.println("exitFuc_dec");
 		
-		int symbolnum = getSymbolNum(tree.root);
+		int symbolnum = getSymbolNum(getFunction(ctx).getTable());
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		codeGenerater.addReturn();
 		codeGenerater.setlocalVarNum(symbolnum);
