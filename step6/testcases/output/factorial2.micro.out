@@ -22,6 +22,7 @@
 ;LABEL label2
 ;STOREI $L1 $R
 ;RET 
+
 ;LABEL main
 ;LINK 
 ;WRITES input
@@ -53,6 +54,7 @@
 ;STOREI 0 $T6
 ;STOREI $T6 $R
 ;RET 
+
 ;tiny code
 str input "Please enter an integer number: "
 str eol "\n"
@@ -63,7 +65,6 @@ push r2
 push r3
 jsr main
 sys halt
-
 label factorial
 link 2
 move 1 r0
@@ -101,7 +102,6 @@ move $-1 r6
 move r6 $7
 unlnk
 ret
-
 label main
 link 2
 sys writes input

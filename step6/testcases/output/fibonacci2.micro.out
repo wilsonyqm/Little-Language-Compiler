@@ -48,6 +48,7 @@
 ;JUMP label2
 ;LABEL label2
 ;RET 
+
 ;LABEL main
 ;LINK 
 ;WRITES input
@@ -75,6 +76,7 @@
 ;STOREI 0 $T5
 ;STOREI $T5 $R
 ;RET 
+
 ;tiny code
 str input "Please input an integer number: "
 str space " "
@@ -86,7 +88,6 @@ push r2
 push r3
 jsr main
 sys halt
-
 label F
 link 2
 move 2 r0
@@ -163,7 +164,6 @@ jmp label2
 label label2
 unlnk
 ret
-
 label main
 link 3
 sys writes input

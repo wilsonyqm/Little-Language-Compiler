@@ -166,7 +166,6 @@ public class CodeGenerater{
 		//start main function
 
 						
-		System.out.println();
     	for(int i=0; i<tinyNodes.size();i++){
     		System.out.println(tinyNodes.get(i).toString());
     	}	

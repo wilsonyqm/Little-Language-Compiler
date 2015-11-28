@@ -287,6 +287,7 @@ public class MicroIRListener extends MicroBaseListener{
 		for (Function f : functionList) {
 			CodeGenerater cg1 = f.getCodeGenerater();
 			cg1.printIRNodes();
+			System.out.println();
 		}
 		cg.setSymbols(tree.getAllsymbols(tree.root));
 		cg.printGlobalTiny();
