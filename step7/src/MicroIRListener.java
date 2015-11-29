@@ -112,7 +112,7 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 	
 	private void annotateTreeFunc(ParseTree ctx, Function function){
-		if(ctx == null || ctx.getText() == "")
+		if(ctx == null)
 			return;
 		setFunction(ctx,function);
 		int num = ctx.getChildCount();
@@ -269,7 +269,7 @@ public class MicroIRListener extends MicroBaseListener{
 	//*******************************Listener functions*************************************
 	
 	@Override public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
-	//System.out.println("enterPgm_body");
+//	System.out.println("enterPgm_body");
 		if (ctx.getChild(0) == null ||ctx.getChild(0).getText().equals("")) return;
 		String[] global_vars = ctx.getChild(0).getText().split(";");
 		for (int i = 0; i < global_vars.length; i++) {
@@ -279,13 +279,14 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 	
 	@Override public void exitPgm_body(MicroParser.Pgm_bodyContext ctx) { 
-	//System.out.println("exitPgm_body");
-	//	tree.printAll(tree.root);
+//	System.out.println("exitPgm_body");
+//		tree.printAll(tree.root);
 
 		int tiny = 0;
 		System.out.println(";IR code");
 		for (Function f : functionList) {
 			CodeGenerater cg1 = f.getCodeGenerater();
+			cg1.setGlobalSymbols(tree.root.getSymbols());
 			cg1.printIRNodes();
 			System.out.println();
 		}
@@ -301,25 +302,15 @@ public class MicroIRListener extends MicroBaseListener{
 		System.out.println("end");
 
 	}
-	// @Override public void enterFunc_body(MicroParser.Func_bodyContext ctx) {
-	// 	System.out.println("enterFunc_body");
-	// 		if (ctx.getChild(0) == null ||ctx.getChild(0).getText().equals("")) return;
-	// 		String[] global_vars = ctx.getChild(0).getText().split(";");
-	// 		for (int i = 0; i < global_vars.length; i++) {
-	// 			String curr_val = global_vars[i];
-	// 			addtype(curr_val, tree.root, "local");
-	// 		}
-	// }
+	
 	
 	@Override public void enterFunc_decl(MicroParser.Func_declContext ctx) {
-	//	System.out.println("enterFunc_decl");
-	
+//	System.out.println("enterFunc_decl");
 		SymbolTable table = new SymbolTable(ctx.getChild(2).getText());
 		tree.currscope.addChild(table);
 		tree.enterscope();
 		int paraNum = 0;
 		setLocal(1);
-	//	setLabel(1);
 		setPara(1);
 		funcType.put(ctx.getChild(2).getText(), ctx.getChild(1).getText());
 		if (ctx.getChild(4) != null && !ctx.getChild(4).getText().equals("")) {
@@ -329,9 +320,10 @@ public class MicroIRListener extends MicroBaseListener{
 		 		func_addtype(s,table);
 			}
 		}
-		if (ctx.getChild(7) != null && ctx.getChild(7).getChild(0) != null) {
+		if (ctx.getChild(7) != null && ctx.getChild(7).getChild(0) != null
+			 && !ctx.getChild(7).getChild(0).getText().equals("")) {
 			String str = ctx.getChild(7).getChild(0).getText();
-	//		System.out.println(str);
+
 			String[] strarr = str.split(";");
 			
 			if (str.length() == 0 || strarr.length == 0) return;
@@ -339,8 +331,7 @@ public class MicroIRListener extends MicroBaseListener{
 				addtype(s, table, "local");
 			}
 		}
-		ArrayList<Symbol> globalSymbols = tree.root.getSymbols();
-		Function function = new Function(table,globalSymbols);
+		Function function = new Function(table);
 		annotateTreeFunc(ctx, function);
 		CodeGenerater codeGenerater = function.getCodeGenerater();
 		IRNode func_head = new IRNode("LABEL",null,null,ctx.getChild(2).getText());
@@ -352,7 +343,7 @@ public class MicroIRListener extends MicroBaseListener{
 	}
 
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
-	//	System.out.println("exitFuc_dec");
+//	System.out.println("exitFuc_dec");
 		
 		int symbolnum = getSymbolNum(getFunction(ctx).getTable());
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
@@ -971,16 +962,15 @@ public class MicroIRListener extends MicroBaseListener{
 	@Override public void exitPrimary(MicroParser.PrimaryContext ctx){
 //	System.out.println("exitPrimary");
 			SymbolTable table = getFunction(ctx).getTable();
-//	System.out.println("this table is "+table.scope);
 			CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 			NodeInfo expr = getValue(ctx.getChild(1));
+	
 			if(expr != null ){
 				setValue(ctx,expr);
 			}
 			else{
 				String primary = ctx.getChild(0).getText();
-				String type = tree.checkType(primary);
-					
+				String type = tree.checkType(primary);		
 			    if(!primary.matches("[a-zA-Z]\\w*")){
 			    	String registerName = getFunction(ctx).getRegister();
 			    	String opCode = lookupStoreCode(type);
@@ -995,11 +985,10 @@ public class MicroIRListener extends MicroBaseListener{
 				}
 				else{
 					NodeInfo node = getValue(ctx.getChild(0));
-//		System.out.println("primary "+ctx.getText()+" temp "+node.getTemp());
 					setValue(ctx,node);
 				}
 			}
-//	System.out.println("exit exitPrimary");
+
 	}	
 	
 	@Override public void exitId(MicroParser.IdContext ctx) {

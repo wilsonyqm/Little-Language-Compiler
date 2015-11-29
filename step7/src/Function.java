@@ -7,8 +7,8 @@ public class Function{
 	int localVarNum;
 	int registernum;
 	
-	public Function(SymbolTable table, ArrayList<Symbol> globalSymbols){
-		this.codeGenerater = new CodeGenerater(globalSymbols);
+	public Function(SymbolTable table){
+		this.codeGenerater = new CodeGenerater();
 		this.symbolTable = table;
 		this.registernum = 1;
 	}

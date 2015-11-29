@@ -7,6 +7,7 @@ public class CodeGenerater{
     ArrayList<Symbol> symbols;
     ArrayList<Symbol> globalSymbols;
     ArrayList<ArrayList<IRNode>> incrNodes;
+    ArrayList<CFGNode> workList;
 	private int tinycount;
 	private HashMap<String, String> regMap;
 	private HashSet<String> compareSet;
@@ -15,15 +16,16 @@ public class CodeGenerater{
 	private Stack<IRNode> paraStack;
 	private int stackSize;
 	private boolean haspush;
-    public CodeGenerater(ArrayList<Symbol> globalSymbols){
+    public CodeGenerater(){
     	this.iRNodes = new ArrayList<IRNode>();
     	this.cfgNodes = new ArrayList<CFGNode>();
     	this.tinyNodes = new ArrayList<TinyNode>();
     	this.incrNodes = new ArrayList<ArrayList<IRNode>>();
+    	this.workList = new ArrayList<CFGNode>();
     	this.paraStack = new Stack<IRNode>();
     	this.stackSize = 0;
-		this.symbols = new ArrayList<>();
-		this.globalSymbols = globalSymbols;
+		this.symbols = new ArrayList<Symbol>();
+		this.globalSymbols = new ArrayList<Symbol>();
 		this.tinycount = 0;
 		this.regMap = new HashMap<>();
 		this.compareSet = new HashSet<>();
@@ -33,7 +35,7 @@ public class CodeGenerater{
     
     public void addReturn(){
     	IRNode node = iRNodes.get(iRNodes.size()-1);
-    	if(node.getOpCode().equals("LABEL"))
+    	if(!node.getOpCode().equals("RET"))
     		iRNodes.add(new IRNode("RET",null,null,""));
     }
     public void pushIRNode(IRNode node){
@@ -105,7 +107,13 @@ public class CodeGenerater{
 	}
     public void setSymbols(ArrayList<Symbol> list) {
     	symbols.addAll(list);
+    	symbols.addAll(this.globalSymbols);
     }
+    
+    public void setGlobalSymbols(ArrayList<Symbol> global){
+    	globalSymbols.addAll(global);
+    }
+    
     public void addIRNode(IRNode node){
     	iRNodes.add(node);
     }
@@ -199,7 +207,12 @@ public class CodeGenerater{
     				}
     			}
     		}
-    		this.cfgNodes.add(cfgNdoe);	
+    		if (node.getOpCode().equals("RET")){
+    			for (int i=0; i<globalSymbols.size();i++){
+    				cfgNode.addLiveOut(globalSymbols.get(i).getName());
+    			}
+    		}
+    		this.cfgNodes.add(cfgNode);	
     	}
     	
     	//TODO: set successor and predecessor and lead label
@@ -207,18 +220,18 @@ public class CodeGenerater{
     		if(i==0){
     			CFGNode cfgNode = cfgNodes.get(i);
     			cfgNode.setLead(true);
-    			cfgNode.addSuccessor(cfgNodes.get(i+1).getIRNode());
+    			cfgNode.addSuccessor(cfgNodes.get(i+1));
     			continue;
     		}
-    		cfgNode = cfgNodes.get(i);
+    		CFGNode cfgNode = cfgNodes.get(i);
     		IRNode irNode = cfgNode.getIRNode();
     		String opCode = irNode.getOpCode();
     		if (opCode.equals("JUMP")){
     			String label = irNode.getResult();
     			CFGNode labelNode = findLabel(label);
     			if(labelNode != null){
-    				labelNode.addPredecessor(cfgNode.getIRNode());
-    				cfgNode.addSuccessor(labelNode.getIRNode());
+    				labelNode.addPredecessor(cfgNode);
+    				cfgNode.addSuccessor(labelNode);
     				labelNode.setLead(true);
     			}
     			else{
@@ -228,11 +241,11 @@ public class CodeGenerater{
     		else if(isBranch(opCode)) {
     			cfgNode.setLead(true);
     			String label = irNode.getResult();
-    			labelNode = findLabel(label);
+    			CFGNode labelNode = findLabel(label);
     			if(labelNode != null){
-    				labelNode.addPredecessor(cfgNode.getIRNode());
-    				cfgNode.addSuccessor(labelNode.getIRNode());
-    				cfgNode.addSuccessor(cfgNodes.get(i+1).getIRNode());
+    				labelNode.addPredecessor(cfgNode);
+    				cfgNode.addSuccessor(labelNode);
+    				cfgNode.addSuccessor(cfgNodes.get(i+1));
     				cfgNode.setLead(true);
     				labelNode.setLead(true);
     			}
@@ -241,14 +254,24 @@ public class CodeGenerater{
     			}
     		}
     		else{
-    			if( i+1 < cfgNodes.size()){
-    				cfgNode.addSuccessor(cfgNodes.get(i+1).getIRNode());
-    				cfgNodes.get(i+1).addPredecessor(cfgNode.getIRNode());
+    			if (i+1 < cfgNodes.size() && !opCode.equals("RET")) {
+    				cfgNode.addSuccessor(cfgNodes.get(i+1));
+    				cfgNodes.get(i+1).addPredecessor(cfgNode);
     			}
     		}
     	}
     	//TODO: build up liveness table
-    	 	
+ //   	for (int i = cfgNodes.size()-1; i>=0; i--){
+ //   		CFGNode cfgNode = cfgNodes.get(i);
+ //   		if (!cfgNode.getSuccessor().isEmpty()){
+ //   			ArrayList<CFGNode> successor = cfgNode.getSuccessor();
+ //   			for( CFGNode snode: successor){
+ //   				cfgNode.ad
+ //   			}
+ //   		}
+ //   	}
+    	this.workList.addAll(cfgNodes);
+    		 	
     }
     
     public void printIRNodes(){
@@ -266,14 +289,14 @@ public class CodeGenerater{
 					System.out.println("str " + symbols.get(i).getName() + " " + symbols.get(i).getValue());
 					// System.out.println("str " + symbols.get(i).getName() + "\"" + "\\" + "n" + "\"");
 				}
-				else if (symbols.get(i).getType().equals("FLOAT")){
-					System.out.println("float " + symbols.get(i).getName());
-				}
-				else if (symbols.get(i).getType().equals("INT")){
-					System.out.println("int " + symbols.get(i).getName());
-				}
+//				else if (symbols.get(i).getType().equals("FLOAT")){
+//					System.out.println("float " + symbols.get(i).getName());
+//				}
+//				else if (symbols.get(i).getType().equals("INT")){
+//					System.out.println("int " + symbols.get(i).getName());
+//				}
 				else{
-					System.out.println("Error type");
+					System.out.println("var " + symbols.get(i).getName());
 				}
 			}
 		}
@@ -286,20 +309,39 @@ public class CodeGenerater{
 		System.out.println("sys halt");
 		
 	}
+	
     public void printTinyNodes(){
-		convertListIRtoTiny(iRNodes, tinyNodes);
-    	
-		//start main function
 
-						
+System.out.println("-----------------------------used for debug-----------------------");
+		convertListIRtoTiny(iRNodes, tinyNodes);
+System.out.println("-----------------------------used for debug-----------------------");    					
     	for(int i=0; i<tinyNodes.size();i++){
     		System.out.println(tinyNodes.get(i).toString());
     	}	
 		
     }
+
 	private void convertListIRtoTiny(ArrayList<IRNode> irlist, ArrayList<TinyNode> tinylist) {
-		for (IRNode irnode : irlist) {
+		IRNode irnode;
+		for(int k=0;k<irlist.size();k++){
+		irnode = irlist.get(k);
+//		for (IRNode irnode : irlist) {
 			tinylist.addAll(convertNodeIRtoTiny(irnode));
+			
+//-----------used for debug--------------------------------
+	System.out.println(";"+irnode.toString());
+	Set<String> genSet = cfgNodes.get(k).getGenSet();
+	System.out.print(";GenSet is "+Arrays.toString(genSet.toArray(new String[genSet.size()])));
+	Set<String> killSet = cfgNodes.get(k).getKillSet();
+	System.out.print("  KillSet is "+Arrays.toString(killSet.toArray(new String[killSet.size()])));
+	Set<String> liveInSet = cfgNodes.get(k).getLiveInSet();
+	System.out.print("  LiveInSet is "+Arrays.toString(liveInSet.toArray(new String[liveInSet.size()])));
+	Set<String> liveOutSet = cfgNodes.get(k).getLiveOutSet();
+	System.out.println("  LiveOutSet is "+Arrays.toString(liveOutSet.toArray(new String[liveOutSet.size()])));
+	for(int i=0; i<convertNodeIRtoTiny(irnode).size();i++){
+		System.out.println(convertNodeIRtoTiny(irnode).get(i));
+	}
+//------------used for debug----------------------------------
 		}
 	}
 	
@@ -364,8 +406,9 @@ public class CodeGenerater{
 			}
 			// Get Op1 Type
 			String op1Type = "";
-
+			
 			for (int i = 0; i < symbols.size(); i++) {
+	//	System.out.println(symbols.get(i).getName());
 				if (symbols.get(i).getName().equals(op1) || symbols.get(i).getAttr().equals(op1)) {
 					op1Type = symbols.get(i).getType();
 					break;

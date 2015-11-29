@@ -4,22 +4,13 @@ public class IRNode {
 	 private String operand1;
 	 private String operand2;
 	 private String result;
-	 private HashSet<String> liveInSet;
-	 private HashSet<String> liveOutSet;
-	 private HashSet<String> genSet;
-	 private HashSet<String> killSet;
-	 private boolean isLead;
+	
 	
 	public IRNode(String opCode,String operand1, String operand2, String result){
 		this.opCode = opCode;
 		this.operand1 = operand1;
 		this.operand2 = operand2;
 		this.result = result;	
-		this.liveInSet = new HashSet<String>();
-		this.liveOutSet = new HashSet<String>();
-		this.genSet = new HashSet<String>();
-		this.killSet = new HashSet<String>();
-		this.isLead = false;
 			
 	}
 	
@@ -39,41 +30,6 @@ public class IRNode {
 		return result;
 	}	
 	
-	public void setLead(boolean var){
-		this.isLead = var;
-	}
-	
-	public HashSet<String> getLiveInSet(){
-		return this.liveInSet;
-	}
-	
-	public void addLiveIn(String var){
-		this.liveInSet.add(var);
-	}
-	
-	public HashSet<String> getLiveOutSet(){
-		return this.liveOutSet;
-	}
-	
-	public void addLiveOut(String var){
-		this.liveOutSet.add(var);
-	}
-	
-	public HashSet<String> getGenSet(){
-		return this.genSet;
-	}
-	
-	public void addGenSet(String var){
-		this.genSet.add(var);
-	}
-	
-	public HashSet<String> getKillSet(){
-		return this.killSet;
-	}
-	
-	public void addKillSet(String var){
-		this.killSet.add(var);
-	}
 	
 	@Override
 	public String toString(){

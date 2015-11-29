@@ -1,70 +1,80 @@
 import java.util.*;
 public class CFGNode{
-	private ArrayList<IRNode> predecessor;
-	private ArrayList<IRNdoe> successor;
-	private IRNode irNode;
-	
+	 ArrayList<CFGNode> predecessor;
+	 ArrayList<CFGNode> successor;
+	 private IRNode irNode;
+	 Set<String> liveInSet;
+	 Set<String> liveOutSet;
+	 Set<String> genSet;
+	 Set<String> killSet;
+	 private boolean isLead;
 	
 	public CFGNode(IRNode node){
-		this.predecessor = new ArrayList<IRNode>();
-		this.successor = new ArrayList<IRNode>();
+		this.predecessor = new ArrayList<CFGNode>();
+		this.successor = new ArrayList<CFGNode>();
 		this.irNode = node;
+		this.liveInSet = new HashSet<>();
+		this.liveOutSet = new HashSet<>();
+		this.genSet = new HashSet<>();
+		this.killSet = new HashSet<>();
+		this.isLead = false;
+		
 	}
 	
 	public void setLead(boolean var){
-		this.getIRNode().setLead(var);
+		this.isLead = var;
 	}
 	
-	public ArrayList<IRNode> getPredecessor(){
+	public Set<String> getLiveInSet(){
+		return this.liveInSet;
+	}
+	
+	public void addLiveIn(String var){
+		this.liveInSet.add(var);
+	}
+	
+	public Set<String> getLiveOutSet(){
+		return this.liveOutSet;
+	}
+	
+	public void addLiveOut(String var){
+		this.liveOutSet.add(var);
+	}
+	
+	public Set<String> getGenSet(){
+		return this.genSet;
+	}
+	
+	public void addGenSet(String var){
+		this.genSet.add(var);
+	}
+	
+	public Set<String> getKillSet(){
+		return this.killSet;
+	}
+	
+	public void addKillSet(String var){
+		this.killSet.add(var);
+	}	
+	
+	public ArrayList<CFGNode> getPredecessor(){
 		return this.predecessor;
 	}
 	
-	public void addPredecessor(IRNode node){
+	public void addPredecessor(CFGNode node){
 		this.predecessor.add(node);
 	}
 	
-	public ArrayList<IRNode> getSuccessor(){
+	public ArrayList<CFGNode> getSuccessor(){
 		return this.successor;
 	}
 	
-	public void addSuccessor(IRNode node){
+	public void addSuccessor(CFGNode node){
 		this.successor.add(node);
 	}
 	
 	public IRNode getIRNode(){
 		return this.irNode;
-	}
-	
-	public HashSet<String> getLiveInSet(){
-		return this.getIRNode().getLiveInSet();
-	}
-	
-	public void addLiveIn(String var){
-		this.getIRNode().addLiveIn(var);
-	}
-	
-	public HashSet<String> getLiveOutSet(){
-		return this.getIRNode().getLiveOutSet();
-	}
-	
-	public void addLiveOut(String var){
-		this.getIRNode().addLiveOut(var);
-	}
-	
-	public HashSet<String> getGenSet(){
-		return this.getIRNode().getGenSet();
-	}
-	
-	public void addGenSet(String var){
-		this.getIRNode().addGenSet(var);
-	}
-	
-	public HashSet<String> getKillSet(){
-		return this.getIRNode().getkillSet();
-	}
-	
-	public void addKillSet(String var){
-		this.getIRNode().addKillSet(var);
 	}
 	
 }
