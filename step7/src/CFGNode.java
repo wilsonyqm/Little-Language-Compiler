@@ -29,8 +29,20 @@ public class CFGNode{
 		return this.liveInSet;
 	}
 	
+	public void setLiveInSet(Set<String> liveInSet){
+		this.liveInSet = new HashSet<String>(liveInSet);
+	}
+	
 	public void addLiveIn(String var){
 		this.liveInSet.add(var);
+	}
+	
+	public void addAllLiveIn(Set<String> vars){
+		this.liveInSet.addAll(vars);
+	}
+	
+	public void removeAllLiveIn(Set<String> vars){
+		this.liveInSet.removeAll(vars);
 	}
 	
 	public Set<String> getLiveOutSet(){
@@ -39,6 +51,10 @@ public class CFGNode{
 	
 	public void addLiveOut(String var){
 		this.liveOutSet.add(var);
+	}
+	
+	public void addAllLiveOut(Set<String> vars){
+		this.liveOutSet.addAll(vars);
 	}
 	
 	public Set<String> getGenSet(){

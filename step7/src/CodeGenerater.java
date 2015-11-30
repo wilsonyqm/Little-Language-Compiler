@@ -16,6 +16,7 @@ public class CodeGenerater{
 	private Stack<IRNode> paraStack;
 	private int stackSize;
 	private boolean haspush;
+	private String funcId;
     public CodeGenerater(){
     	this.iRNodes = new ArrayList<IRNode>();
     	this.cfgNodes = new ArrayList<CFGNode>();
@@ -31,6 +32,10 @@ public class CodeGenerater{
 		this.compareSet = new HashSet<>();
 		this.init_compareSet(compareSet);
 		this.haspush = false;
+    }
+    
+    public void setFuncId(String id){
+    	this.funcId = new String(id);
     }
     
     public void addReturn(){
@@ -159,6 +164,18 @@ public class CodeGenerater{
     			|| str.equals("NE") || str.equals("EQ"));
     }
     
+    public void computeLiveInOut(CFGNode cfgNode){
+    	if (!cfgNode.getSuccessor().isEmpty()){
+    			ArrayList<CFGNode> successor = cfgNode.getSuccessor();
+    			for( CFGNode snode: successor){
+    				cfgNode.addAllLiveOut(snode.getLiveInSet());
+    			}
+    		}
+    		cfgNode.setLiveInSet(cfgNode.getLiveOutSet());
+    		cfgNode.removeAllLiveIn(cfgNode.getKillSet());
+    		cfgNode.addAllLiveIn(cfgNode.getGenSet());
+    }
+    
     public void buildCFGNodes(){
     	for (IRNode node : iRNodes){
     		CFGNode cfgNode = new CFGNode(node);
@@ -191,27 +208,30 @@ public class CodeGenerater{
     			}
     			else if(opCode.equals("READI") || opCode.equals("READF") || opCode.equals("POP")){
     				String result = node.getResult();
-    				if(result != null && !isNumeric(result)){
+    				if(result != null && !result.equals("") && !isNumeric(result)){
     					cfgNode.getKillSet().add(result);
     				}
     			}
-    			else if(opCode.equals("WRITEI") || opCode.equals("WRITEF")|| opCode.equals("PUSH")){
+    			else if(opCode.equals("WRITEI") || opCode.equals("WRITEF")|| opCode.equals("WRITES")|| opCode.equals("PUSH")){
     				String result = node.getResult();
-    				if(result != null && !isNumeric(result)){
+    				if(result != null && !result.equals("") && !isNumeric(result)){
     					cfgNode.getGenSet().add(result);
     				}
     			}
-    			else if(opCode.equals("JSR")){
-    				for(Symbol symbol : globalSymbols){
-    					cfgNode.getGenSet().add(symbol.getName());
-    				}
-    			}
+    //			else if(opCode.equals("JSR")){
+    //				String id = node.getResult();
+    //				if (!this.funcId.equals(id)){
+    //					for(Symbol symbol : globalSymbols){
+    //						cfgNode.getGenSet().add(symbol.getName());
+    //					}
+    //				}
+    //			}
     		}
-    		if (node.getOpCode().equals("RET")){
-    			for (int i=0; i<globalSymbols.size();i++){
-    				cfgNode.addLiveOut(globalSymbols.get(i).getName());
-    			}
-    		}
+    	//	if (node.getOpCode().equals("RET")){
+    	//		for (int i=0; i<globalSymbols.size();i++){
+    	//			cfgNode.addLiveOut(globalSymbols.get(i).getName());
+    	//		}
+    	//	}
     		this.cfgNodes.add(cfgNode);	
     	}
     	
@@ -254,24 +274,28 @@ public class CodeGenerater{
     			}
     		}
     		else{
-    			if (i+1 < cfgNodes.size() && !opCode.equals("RET")) {
+    			if (i+1 < cfgNodes.size()) {
     				cfgNode.addSuccessor(cfgNodes.get(i+1));
     				cfgNodes.get(i+1).addPredecessor(cfgNode);
     			}
     		}
     	}
     	//TODO: build up liveness table
- //   	for (int i = cfgNodes.size()-1; i>=0; i--){
- //   		CFGNode cfgNode = cfgNodes.get(i);
- //   		if (!cfgNode.getSuccessor().isEmpty()){
- //   			ArrayList<CFGNode> successor = cfgNode.getSuccessor();
- //   			for( CFGNode snode: successor){
- //   				cfgNode.ad
- //   			}
- //   		}
- //   	}
+    	for (int i = cfgNodes.size()-1; i>=0; i--){
+    		CFGNode cfgNode = cfgNodes.get(i);
+    		computeLiveInOut(cfgNode);
+    	}
     	this.workList.addAll(cfgNodes);
-    		 	
+    	
+    	while(!workList.isEmpty()){
+    		CFGNode cfgNode = workList.remove(workList.size()-1);
+    		Set<String> preLiveInSet = cfgNode.getLiveInSet();
+    		computeLiveInOut(cfgNode);
+    		Set<String> afterLiveInSet = cfgNode.getLiveInSet();
+    		if(! (preLiveInSet.containsAll(afterLiveInSet) && afterLiveInSet.containsAll(preLiveInSet))){
+    			workList.addAll(cfgNode.getPredecessor());
+    		}
+    	} 		 	
     }
     
     public void printIRNodes(){
@@ -312,9 +336,9 @@ public class CodeGenerater{
 	
     public void printTinyNodes(){
 
-System.out.println("-----------------------------used for debug-----------------------");
+System.out.println(";-----------------------------used for debug-----------------------");
 		convertListIRtoTiny(iRNodes, tinyNodes);
-System.out.println("-----------------------------used for debug-----------------------");    					
+System.out.println(";-----------------------------used for debug-----------------------");    					
     	for(int i=0; i<tinyNodes.size();i++){
     		System.out.println(tinyNodes.get(i).toString());
     	}	
@@ -330,16 +354,16 @@ System.out.println("-----------------------------used for debug-----------------
 			
 //-----------used for debug--------------------------------
 	System.out.println(";"+irnode.toString());
-	Set<String> genSet = cfgNodes.get(k).getGenSet();
-	System.out.print(";GenSet is "+Arrays.toString(genSet.toArray(new String[genSet.size()])));
-	Set<String> killSet = cfgNodes.get(k).getKillSet();
-	System.out.print("  KillSet is "+Arrays.toString(killSet.toArray(new String[killSet.size()])));
-	Set<String> liveInSet = cfgNodes.get(k).getLiveInSet();
-	System.out.print("  LiveInSet is "+Arrays.toString(liveInSet.toArray(new String[liveInSet.size()])));
-	Set<String> liveOutSet = cfgNodes.get(k).getLiveOutSet();
-	System.out.println("  LiveOutSet is "+Arrays.toString(liveOutSet.toArray(new String[liveOutSet.size()])));
+//	Set<String> genSet = cfgNodes.get(k).getGenSet();
+//	System.out.print(";GenSet is "+Arrays.toString(genSet.toArray(new String[genSet.size()])));
+//	Set<String> killSet = cfgNodes.get(k).getKillSet();
+//	System.out.print("  KillSet is "+Arrays.toString(killSet.toArray(new String[killSet.size()])));
+//	Set<String> liveInSet = cfgNodes.get(k).getLiveInSet();
+//	System.out.print("  LiveInSet is "+Arrays.toString(liveInSet.toArray(new String[liveInSet.size()])));
+//	Set<String> liveOutSet = cfgNodes.get(k).getLiveOutSet();
+//	System.out.println("  LiveOutSet is "+Arrays.toString(liveOutSet.toArray(new String[liveOutSet.size()])));
 	for(int i=0; i<convertNodeIRtoTiny(irnode).size();i++){
-		System.out.println(convertNodeIRtoTiny(irnode).get(i));
+		System.out.println(";-----------------------------"+convertNodeIRtoTiny(irnode).get(i));
 	}
 //------------used for debug----------------------------------
 		}
@@ -409,7 +433,7 @@ System.out.println("-----------------------------used for debug-----------------
 			
 			for (int i = 0; i < symbols.size(); i++) {
 	//	System.out.println(symbols.get(i).getName());
-				if (symbols.get(i).getName().equals(op1) || symbols.get(i).getAttr().equals(op1)) {
+				if (symbols.get(i).getName().equals(op1) ||(symbols.get(i).getAttr()!=null && symbols.get(i).getAttr().equals(op1))) {
 					op1Type = symbols.get(i).getType();
 					break;
 				}

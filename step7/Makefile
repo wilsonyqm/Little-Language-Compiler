@@ -43,17 +43,28 @@ run:
 	java -cp $(LIB_ANTLR):classes/ Micro testcases/input/test_if.micro > testcases/output/test_if.micro.out
 	
 diff:
-	diff -bBw testcases/output/fma.micro.out testcases/output/fma.out 
-	diff -bBw testcases/output/factorial2.micro.out testcases/output/factorial2.out 
-	diff -bBw testcases/output/fibonacci2.micro.out testcases/output/fibonacci2.out 
-	diff -bBw testcases/output/step4_testcase.micro.out testcases/output/step4_testcase.out 
-	diff -bBw testcases/output/step4_testcase2.micro.out testcases/output/step4_testcase2.out 
-	diff -bBw testcases/output/step4_testcase3.micro.out testcases/output/step4_testcase3.out 
-	diff -bBw testcases/output/test_573.micro.out testcases/output/test_573.out 
-	diff -bBw testcases/output/test_adv.micro.out testcases/output/test_adv.out 
-	diff -bBw testcases/output/test_expr.micro.out testcases/output/test_expr.out
-	diff -bBw testcases/output/test_for.micro.out testcases/output/test_for.out 
-	diff -bBw testcases/output/test_if.micro.out testcases/output/test_if.out 
+	./tiny testcases/output/fma.micro.out testcases/input/fma.input
+	./tiny testcases/output/fma.out testcases/input/fma.input
+	./tiny testcases/output/factorial2.micro.out testcases/input/factorial2.input
+	./tiny testcases/output/factorial2.out testcases/input/factorial2.input
+	./tiny testcases/output/fibonacci2.micro.out testcases/input/fibonacci2.input
+	./tiny testcases/output/fibonacci2.out testcases/input/fibonacci2.input
+	./tiny testcases/output/step4_testcase.micro.out testcases/input/step4_testcase.input
+	./tiny testcases/output/step4_testcase.out testcases/input/step4_testcase.input
+	./tiny testcases/output/step4_testcase2.micro.out testcases/input/step4_testcase2.input
+	./tiny testcases/output/step4_testcase2.out testcases/input/step4_testcase2.input
+	./tiny testcases/output/step4_testcase3.micro.out testcases/input/step4_testcase3.input
+	./tiny testcases/output/step4_testcase3.out testcases/input/step4_testcase3.input
+	./tiny testcases/output/test_573.micro.out testcases/input/test_573.input
+	./tiny testcases/output/test_573.out testcases/input/test_573.input
+	./tiny testcases/output/test_adv.micro.out testcases/input/test_adv.input
+	./tiny testcases/output/test_adv.out testcases/input/test_adv.input
+	./tiny testcases/output/test_expr.micro.out testcases/input/test_expr.input
+	./tiny testcases/output/test_expr.out testcases/input/test_expr.input
+	./tiny testcases/output/test_for.micro.out testcases/input/test_for.input
+	./tiny testcases/output/test_for.out testcases/input/test_for.input
+	./tiny testcases/output/test_if.micro.out testcases/input/test_if.input
+	./tiny testcases/output/test_if.out testcases/input/test_if.input
 	
 clean:
 	rm -rf classes build

@@ -281,7 +281,7 @@ public class MicroIRListener extends MicroBaseListener{
 	@Override public void exitPgm_body(MicroParser.Pgm_bodyContext ctx) { 
 //	System.out.println("exitPgm_body");
 //		tree.printAll(tree.root);
-
+//        tree.root.printTable();
 		int tiny = 0;
 		System.out.println(";IR code");
 		for (Function f : functionList) {
@@ -334,6 +334,7 @@ public class MicroIRListener extends MicroBaseListener{
 		Function function = new Function(table);
 		annotateTreeFunc(ctx, function);
 		CodeGenerater codeGenerater = function.getCodeGenerater();
+		codeGenerater.setFuncId(ctx.getChild(2).getText());
 		IRNode func_head = new IRNode("LABEL",null,null,ctx.getChild(2).getText());
 		IRNode link = new IRNode("LINK",null,null,"");
 		codeGenerater.addIRNode(func_head);
