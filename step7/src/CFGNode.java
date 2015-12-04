@@ -92,5 +92,8 @@ public class CFGNode{
 	public IRNode getIRNode(){
 		return this.irNode;
 	}
+	public boolean isLead() {
+		return this.isLead;
+	}
 	
 }

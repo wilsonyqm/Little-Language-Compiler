@@ -17,7 +17,9 @@ public class CodeGenerater{
 	private int stackSize;
 	private boolean haspush;
 	private String funcId;
+	private HashSet<String> dirtySet;
     public CodeGenerater(){
+		this.dirtySet = new HashSet<>();
     	this.iRNodes = new ArrayList<IRNode>();
     	this.cfgNodes = new ArrayList<CFGNode>();
     	this.tinyNodes = new ArrayList<TinyNode>();
@@ -80,31 +82,67 @@ public class CodeGenerater{
 		return localVarNum;
 	}
 	private String getTinyRegister(String str) {
-		if (isRegister(str) && regMap.containsKey(str)) {
+		if (regMap.containsKey(str)) {
 			return regMap.get(str);
 		}
-		else if (isRegister(str) && str.length() > 2) {
-			String tmp;
-			if (str.charAt(1) == 'L') {
-				tmp = "$-" + str.substring(2);
-			}
-			else if (str.charAt(1) == 'P') {
-				tmp = "$" + (6 + paraNum - Integer.parseInt(str.substring(2)));
-			}
-			else if (str.charAt(1) == 'R') {
-				tmp = "$" + (6 + paraNum);
-			}
-			else {
-				tmp = "r" + tinycount++;
-			}
-			regMap.put(str, tmp);
-			return tmp;
-		}
 		else {
-			String tmp = "r" + tinycount++;
+		// else if (isRegister(str) && str.length() > 2) {
+			String tmp = getNewRegister();
+			System.out.println("REG MAP  "+ str + ": " + tmp);
 			regMap.put(str, tmp);
 			return tmp;
 		}
+		// else {
+		// 	String tmp = "r" + tinycount++;
+		// 	regMap.put(str, tmp);
+		// 	return tmp;
+		// }
+	}
+	
+	private String getNewRegister() {
+		String[] A = new String[4];
+		for (int i = 0; i < 4; i++) {
+			A[i] = "";
+		}
+		
+		HashMap<String, String> tmpMap = new HashMap<>();
+		for (String str : regMap.keySet()) {
+			tmpMap.put(regMap.get(str), str);
+		}
+		for (String str : regMap.values()) {
+			int idx = Integer.parseInt(str.charAt(1) + "");
+			A[idx] = tmpMap.get(str);
+		}
+		
+		// If the register is not full
+		int i = A.length - 1;
+		for (; i >= 0; i--) {
+			if (A[i].equals("") || A[i].startsWith("$P")) {
+				return "r" + i;
+			}
+		}
+		// If all the register is full, find the first non-dirty one
+		i = A.length - 1;
+		for (; i >= 0; i--) {
+			if (!dirtySet.contains(A[i])) {
+				return "r" + i;
+			}
+		}
+		// If all the register is full, and all of them are dirty.
+		return "r3";
+		
+	}
+	
+	private String calculateTinyRegister(String str) {
+		if (isRegister(str)) {
+			if (str.startsWith("$L")) {
+				return "$-" + str.substring(2);
+			}
+			else if (str.startsWith("$T")) {
+				return "$-" + (localVarNum + Integer.parseInt(str.substring(2)));
+			}
+		}
+		return str;
 	}
 	private String getTinyRegister() {
 		String tmp = "r" + tinycount++;
@@ -336,40 +374,44 @@ public class CodeGenerater{
 	
     public void printTinyNodes(){
 
-System.out.println(";-----------------------------used for debug-----------------------");
-		convertListIRtoTiny(iRNodes, tinyNodes);
-System.out.println(";-----------------------------used for debug-----------------------");    					
-    	for(int i=0; i<tinyNodes.size();i++){
-    		System.out.println(tinyNodes.get(i).toString());
-    	}	
+		System.out.println(";-----------------------------used for debug-----------------------");
+		convertListIRtoTiny(cfgNodes, tinyNodes);
+		System.out.println(";-----------------------------used for debug-----------------------");    					
+		for(int i=0; i<tinyNodes.size();i++){
+			System.out.println(tinyNodes.get(i).toString());
+		}	
 		
-    }
-
-	private void convertListIRtoTiny(ArrayList<IRNode> irlist, ArrayList<TinyNode> tinylist) {
-		IRNode irnode;
-		for(int k=0;k<irlist.size();k++){
-		irnode = irlist.get(k);
-//		for (IRNode irnode : irlist) {
-			tinylist.addAll(convertNodeIRtoTiny(irnode));
-			
-//-----------used for debug--------------------------------
-	System.out.println(";"+irnode.toString());
-//	Set<String> genSet = cfgNodes.get(k).getGenSet();
-//	System.out.print(";GenSet is "+Arrays.toString(genSet.toArray(new String[genSet.size()])));
-//	Set<String> killSet = cfgNodes.get(k).getKillSet();
-//	System.out.print("  KillSet is "+Arrays.toString(killSet.toArray(new String[killSet.size()])));
-//	Set<String> liveInSet = cfgNodes.get(k).getLiveInSet();
-//	System.out.print("  LiveInSet is "+Arrays.toString(liveInSet.toArray(new String[liveInSet.size()])));
-//	Set<String> liveOutSet = cfgNodes.get(k).getLiveOutSet();
-//	System.out.println("  LiveOutSet is "+Arrays.toString(liveOutSet.toArray(new String[liveOutSet.size()])));
-	for(int i=0; i<convertNodeIRtoTiny(irnode).size();i++){
-		System.out.println(";-----------------------------"+convertNodeIRtoTiny(irnode).get(i));
 	}
-//------------used for debug----------------------------------
+
+	private void convertListIRtoTiny(ArrayList<CFGNode> cfglist, ArrayList<TinyNode> tinylist) {
+		CFGNode cfgnode;
+		for(int k=0;k<cfglist.size();k++){
+			cfgnode = cfglist.get(k);
+//		for (IRNode irnode : irlist) {
+			ArrayList<TinyNode> newlist = convertNodeIRtoTiny(cfgnode);
+			tinylist.addAll(newlist);
+			IRNode irnode = cfgnode.getIRNode();
+			
+		//-----------used for debug--------------------------------
+			System.out.println(";"+irnode.toString());
+		//	Set<String> genSet = cfgNodes.get(k).getGenSet();
+		//	System.out.print(";GenSet is "+Arrays.toString(genSet.toArray(new String[genSet.size()])));
+		//	Set<String> killSet = cfgNodes.get(k).getKillSet();
+		//	System.out.print("  KillSet is "+Arrays.toString(killSet.toArray(new String[killSet.size()])));
+		//	Set<String> liveInSet = cfgNodes.get(k).getLiveInSet();
+		//	System.out.print("  LiveInSet is "+Arrays.toString(liveInSet.toArray(new String[liveInSet.size()])));
+		//	Set<String> liveOutSet = cfgNodes.get(k).getLiveOutSet();
+		//	System.out.println("  LiveOutSet is "+Arrays.toString(liveOutSet.toArray(new String[liveOutSet.size()])));
+			
+			for(int i=0; i<newlist.size();i++){
+				System.out.println(";-----------------------------"+newlist.get(i));
+			}
+		//------------used for debug----------------------------------
 		}
 	}
 	
-	private ArrayList<TinyNode> convertNodeIRtoTiny(IRNode irnode) {
+	private ArrayList<TinyNode> convertNodeIRtoTiny(CFGNode cfgNode) {
+		IRNode irnode = cfgNode.getIRNode();
 		String opCode = irnode.getOpCode();
 		ArrayList<TinyNode> res = new ArrayList<>();
 		String op1 = irnode.getOperand1();
@@ -377,16 +419,17 @@ System.out.println(";-----------------------------used for debug----------------
 		String r = irnode.getResult();
 		String s1, s2;
 		String cmmd = getCmmd(opCode);
-		
+		Stack<TinyNode> stk = new Stack<>();
 		if (opCode.equals("STOREI") || opCode.equals("STOREF")) {
 			if (isRegister(irnode.getOperand1())) {
 				s1 = getTinyRegister(irnode.getOperand1());
-				if (isRegister(r) && !(r.equals("$R") && op1.startsWith("$T"))) {
-					s2 = getTinyRegister(r);
-				}
-				else {
-					s2 = r;
-				}
+				// if (isRegister(r) && !(r.equals("$R") && op1.startsWith("$T"))) {
+// 					s2 = getTinyRegister(r);
+// 				}
+// 				else {
+// 					s2 = r;
+// 				}
+				s2 = getTinyRegister(r);
 			}
 			else if (isRegister(r)){
 				s2 = getTinyRegister(irnode.getResult());
@@ -406,6 +449,10 @@ System.out.println(";-----------------------------used for debug----------------
 				if (r.equals("$R")) {
 					res.add(new TinyNode("move", s2, getTinyRegister(r + "R")));
 				}
+			}
+			// Mark the local/glocal as dirty
+			if (r.startsWith("$L") || r.startsWith("$T") || !isRegister(r)) {
+				dirtySet.add(r);
 			}
 		}
 		else if (opCode == null) {
@@ -440,9 +487,17 @@ System.out.println(";-----------------------------used for debug----------------
 			}
 			
 			if (op1Type.equals("")) System.out.println("ERROR, NOT FIND SYMBOL");
-			if (isRegister(op1)) {
-				op1 = getTinyRegister(op1);
+			// if (isRegister(op1) || symbols.contains(op1)) {
+				
+				
+				
+			// }
+			// reload from memory
+			if (!regMap.containsKey(op1) && isGlobal(op1)) {
+				String tmp = getTinyRegister(op1);
+				res.add(new TinyNode("move", op1, tmp));
 			}
+			op1 = getTinyRegister(op1);
 			//Insert Type compare 
 			if (!op2.startsWith("$T")) {
 				String reg2 = getTinyRegister(op2);
@@ -456,7 +511,7 @@ System.out.println(";-----------------------------used for debug----------------
 				res.add(new TinyNode("cmpr", op1, newReg));
 			}
 			//Jump 
-			res.add(new TinyNode(cmmd, null, r));
+			stk.push(new TinyNode(cmmd, null, r));
 		}
 		else if (opCode.equals("LABEL") || opCode.equals("JUMP")) {
 			
@@ -510,14 +565,30 @@ System.out.println(";-----------------------------used for debug----------------
 				s1 = getTinyRegister(op2);
 				s2 = getTinyRegister(op1);
 			}
-			else if (isRegister(op1)) {
+			else if (isRegister(op1) && !isGlobal(op2)) {
 				s2 = getTinyRegister(op1);
 				s1 = op2;
 			}
-			else if (isRegister(op2)) {
+			else if (!isGlobal(op1) && isRegister(op2)) {
 				s2 = getTinyRegister(op1);
 				res.add(new TinyNode("move", op1, s2));
 				s1 = getTinyRegister(op2);
+			}
+			else if (isGlobal(op1) && isGlobal(op2)) {
+				s2 = getTinyRegister(op1);
+				s1 = getTinyRegister(op2);
+				res.add(new TinyNode("move", op1, s2));
+				res.add(new TinyNode("move", op2, s1));
+			}
+			else if (isGlobal(op1)) {
+				s2 = getTinyRegister(op1);
+				s1 = op2;
+				res.add(new TinyNode("move", op1, s2));
+			}
+			else if (isGlobal(op2)) {
+				s1 = op1;
+				s2 = getTinyRegister(op2);
+				res.add(new TinyNode("move", op2, s2));
 			}
 			else { 
 				// no register, both are number
@@ -528,9 +599,59 @@ System.out.println(";-----------------------------used for debug----------------
 			regMap.put(r, s2);
 			res.add(new TinyNode(cmmd, s1, s2));
 		}
+
+		Set<String> liveSet = cfgNode.getLiveOutSet();
+		// Has to initialize here to get rid of cucurrency Error
+		
+		try{
+			// Spilling for every IR sentence
+			spilling(liveSet, res, false);
+			// Considering the end of block
+			// for (CFGNode acfgNode : cfgNode.getSuccessor()) {
+			if (cfgNode.isLead()) {
+				System.out.println("End Of Block");
+				spilling(liveSet, res, true);
+			}
+			// }
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		// Add some Jumps
+		while (!stk.isEmpty()) {
+			res.add(stk.pop());
+		}
+		
 		return res;
 	}
 	
+	private void spilling(Set<String> liveSet, ArrayList<TinyNode> res, boolean endOfBlock) {
+		Set<String> keySet = new HashSet<String>(regMap.keySet());
+		for (String str : keySet) {
+			if (str == null || str.equals("")) {
+				System.out.println("NULL");
+				break;
+			}
+			if (!endOfBlock && !liveSet.contains(str)) {
+				System.out.println("LIVE");
+				if (str.startsWith("$T") || dirtySet.contains(str)) {
+					System.out.println("Dirty");
+					res.add(new TinyNode("move", regMap.get(str), calculateTinyRegister(str)));
+					if (dirtySet.contains(str)) dirtySet.remove(str);
+				}
+				regMap.remove(str);
+			}
+			if (endOfBlock && liveSet.contains(str)) {
+				System.out.println("LIVE");
+				if (dirtySet.contains(str)) {
+					System.out.println("Dirty");
+					res.add(new TinyNode("move", regMap.get(str), calculateTinyRegister(str)));
+					dirtySet.remove(str);
+				}
+				regMap.remove(str);
+			}
+		}
+	}
 	private void init_compareSet(HashSet<String> set) {
 		set.add("GE");
 		set.add("GT");
@@ -617,6 +738,14 @@ System.out.println(";-----------------------------used for debug----------------
 				break;
 		}
 		return cmmd;
+	}
+	private boolean isGlobal(String str) {
+		for (Symbol s : globalSymbols) {
+			if (s.getName().equals(str)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	private boolean isRegister(String str) {
 		if (str == null) return false;
