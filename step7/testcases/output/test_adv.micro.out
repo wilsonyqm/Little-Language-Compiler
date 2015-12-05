@@ -1,0 +1,805 @@
+;IR code
+;LABEL main
+;LINK 
+;STOREF 0.0001 $T1
+;STOREF $T1 tolerance
+;STOREF 7.0 $T2
+;STOREF $T2 num
+;STOREF num approx
+;STOREI 0 $T3
+;STOREI $T3 count
+;STOREF 0.0 $T4
+;STOREF $T4 diff
+;STOREI 0 $T5
+;STOREI $T5 enough
+;LABEL label1
+;STOREI 1 $T6
+;EQ enough $T6 label3
+;STOREI 1 $T7
+;ADDI count $T7 $T8
+;STOREI $T8 count
+;STOREF 0.5 $T9
+;DIVF num approx $T10
+;ADDF approx $T10 $T11
+;MULTF $T9 $T11 $T12
+;STOREF $T12 newapprox
+;SUBF approx newapprox $T13
+;STOREF $T13 diff
+;STOREF 0.0 $T14
+;LE diff $T14 label4
+;GE diff tolerance label6
+;STOREI 1 $T15
+;STOREI $T15 enough
+;JUMP label7
+;LABEL label6
+;LABEL label7
+;JUMP label5
+;LABEL label4
+;STOREF 0.0 $T16
+;SUBF $T16 tolerance $T17
+;LE diff $T17 label8
+;STOREI 1 $T18
+;STOREI $T18 enough
+;JUMP label9
+;LABEL label8
+;LABEL label9
+;JUMP label5
+;LABEL label5
+;STOREF newapprox approx
+;LABEL label2
+;JUMP label1
+;LABEL label3
+;WRITEF approx
+;WRITEI count
+;RET 
+
+;tiny code
+var count
+var enough
+var newapprox
+var approx
+var num
+var tolerance
+var diff
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;-----------------------------used for debug-----------------------
+
+;DirtySet
+;LiveSet
+;End Of Block
+;LABEL main
+;-----------------------------label main
+
+;DirtySet
+;LiveSet
+;LINK 
+;-----------------------------link 18
+
+;DirtySet
+;LiveSet;$T1,
+;REG MAP  $T1: r3
+;REMOVE $T1
+;Reg Map$T1 r3
+;IREND SPILLING $T1
+;STOREF 0.0001 $T1
+;-----------------------------move 0.0001 r3
+;r3->$T1, 
+;DirtySet;$T1,
+;LiveSet;tolerance,
+;REG MAP  tolerance: r2
+;REMOVE tolerance
+;Reg Maptolerance r2
+;IREND SPILLING $T1
+;LIVE
+;Dirty
+;REMOVE $T1
+;IREND SPILLING tolerance
+;STOREF $T1 tolerance
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-1
+;r2->tolerance, 
+;DirtySet;tolerance,
+;LiveSet;$T2,;tolerance,
+;REG MAP  $T2: r3
+;REMOVE $T2
+;Reg Map$T2 r3
+;IREND SPILLING $T2
+;IREND SPILLING tolerance
+;STOREF 7.0 $T2
+;-----------------------------move 7.0 r3
+;r3->$T2, ;r2->tolerance, 
+;DirtySet;$T2,;tolerance,
+;LiveSet;num,;tolerance,
+;REG MAP  num: r1
+;REMOVE num
+;Reg Mapnum r1
+;IREND SPILLING $T2
+;LIVE
+;Dirty
+;REMOVE $T2
+;IREND SPILLING num
+;IREND SPILLING tolerance
+;STOREF $T2 num
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-2
+;r1->num, ;r2->tolerance, 
+;DirtySet;num,;tolerance,
+;LiveSet;num,;tolerance,;approx,
+;REG MAP  approx: r3
+;REMOVE approx
+;Reg Mapapprox r3
+;IREND SPILLING num
+;IREND SPILLING tolerance
+;IREND SPILLING approx
+;STOREF num approx
+;-----------------------------move r1 r3
+;r1->num, ;r2->tolerance, ;r3->approx, 
+;DirtySet;num,;tolerance,;approx,
+;LiveSet;$T3,;num,;tolerance,;approx,
+;REG MAP  $T3: r0
+;REMOVE $T3
+;Reg Map$T3 r0
+;IREND SPILLING $T3
+;IREND SPILLING num
+;IREND SPILLING tolerance
+;IREND SPILLING approx
+;STOREI 0 $T3
+;-----------------------------move 0 r0
+;r0->$T3, ;r1->num, ;r2->tolerance, ;r3->approx, 
+;DirtySet;$T3,;num,;tolerance,;approx,
+;LiveSet;num,;count,;tolerance,;approx,
+;REG MAP  count: r2
+;REMOVE count
+;Dirty REMOVE tolerance
+;REMOVE tolerance
+;Reg Mapcount r2
+;IREND SPILLING $T3
+;LIVE
+;Dirty
+;REMOVE $T3
+;IREND SPILLING num
+;IREND SPILLING count
+;IREND SPILLING approx
+;STOREI $T3 count
+;-----------------------------move r2 tolerance
+;-----------------------------move r0 r2
+;-----------------------------move r0 $-3
+;r1->num, ;r2->count, ;r3->approx, 
+;DirtySet;num,;count,;approx,
+;LiveSet;$T4,;num,;count,;tolerance,;approx,
+;REG MAP  $T4: r0
+;REMOVE $T4
+;Reg Map$T4 r0
+;IREND SPILLING $T4
+;IREND SPILLING num
+;IREND SPILLING count
+;IREND SPILLING approx
+;STOREF 0.0 $T4
+;-----------------------------move 0.0 r0
+;r0->$T4, ;r1->num, ;r2->count, ;r3->approx, 
+;DirtySet;$T4,;num,;count,;approx,
+;LiveSet;num,;count,;tolerance,;approx,
+;REG MAP  diff: r1
+;Dirty REMOVE num
+;REMOVE num
+;REMOVE diff
+;Reg Mapdiff r1
+;IREND SPILLING $T4
+;LIVE
+;Dirty
+;REMOVE $T4
+;IREND SPILLING count
+;IREND SPILLING diff
+;LIVE
+;Dirty
+;REMOVE diff
+;IREND SPILLING approx
+;STOREF $T4 diff
+;-----------------------------move r1 num
+;-----------------------------move r0 r1
+;-----------------------------move r0 $-4
+;-----------------------------move r1 diff
+;r2->count, ;r3->approx, 
+;DirtySet;count,;approx,
+;LiveSet;$T5,;num,;count,;tolerance,;approx,
+;REG MAP  $T5: r1
+;REMOVE $T5
+;Reg Map$T5 r1
+;IREND SPILLING $T5
+;IREND SPILLING count
+;IREND SPILLING approx
+;STOREI 0 $T5
+;-----------------------------move 0 r1
+;r1->$T5, ;r2->count, ;r3->approx, 
+;DirtySet;$T5,;count,;approx,
+;LiveSet;num,;count,;enough,;tolerance,;approx,
+;REG MAP  enough: r0
+;REMOVE enough
+;Reg Mapenough r0
+;IREND SPILLING $T5
+;LIVE
+;Dirty
+;REMOVE $T5
+;IREND SPILLING count
+;IREND SPILLING enough
+;IREND SPILLING approx
+;STOREI $T5 enough
+;-----------------------------move r1 r0
+;-----------------------------move r1 $-5
+;r2->count, ;r0->enough, ;r3->approx, 
+;DirtySet;count,;enough,;approx,
+;LiveSet;num,;count,;enough,;tolerance,;approx,
+;IREND SPILLING count
+;IREND SPILLING enough
+;IREND SPILLING approx
+;End Of Block
+;IREND SPILLING count
+;LIVE
+;Dirty
+;REMOVE count
+;IREND SPILLING enough
+;LIVE
+;Dirty
+;REMOVE enough
+;IREND SPILLING approx
+;LIVE
+;Dirty
+;REMOVE approx
+;LABEL label1
+;-----------------------------move r2 count
+;-----------------------------move r0 enough
+;-----------------------------move r3 approx
+;-----------------------------label label1
+
+;DirtySet
+;LiveSet;$T6,;num,;count,;enough,;tolerance,;approx,
+;REG MAP  $T6: r3
+;REMOVE $T6
+;Reg Map$T6 r3
+;IREND SPILLING $T6
+;STOREI 1 $T6
+;-----------------------------move 1 r3
+;r3->$T6, 
+;DirtySet;$T6,
+;LiveSet;num,;count,;enough,;tolerance,;approx,
+;REG MAP  enough: r2
+;IREND SPILLING $T6
+;LIVE
+;Dirty
+;REMOVE $T6
+;IREND SPILLING enough
+;End Of Block
+;IREND SPILLING enough
+;LIVE
+;REMOVE enough
+;EQ enough $T6 label3
+;-----------------------------move enough r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-6
+;-----------------------------jeq label3
+
+;DirtySet
+;LiveSet;num,;$T7,;count,;enough,;tolerance,;approx,
+;REG MAP  $T7: r3
+;REMOVE $T7
+;Reg Map$T7 r3
+;IREND SPILLING $T7
+;STOREI 1 $T7
+;-----------------------------move 1 r3
+;r3->$T7, 
+;DirtySet;$T7,
+;LiveSet;num,;$T8,;enough,;tolerance,;approx,
+;REG MAP  count: r2
+;REMOVE count
+;IREND SPILLING $T7
+;LIVE
+;Dirty
+;REMOVE $T7
+;IREND SPILLING $T8
+;ADDI count $T7 $T8
+;-----------------------------move count r2
+;-----------------------------addi r3 r2
+;-----------------------------move r3 $-7
+;r2->$T8, 
+;DirtySet
+;LiveSet;num,;count,;enough,;tolerance,;approx,
+;REG MAP  count: r3
+;REMOVE count
+;Reg Mapcount r3
+;IREND SPILLING $T8
+;LIVE
+;Dirty
+;REMOVE $T8
+;IREND SPILLING count
+;STOREI $T8 count
+;-----------------------------move r2 r3
+;-----------------------------move r2 $-8
+;r3->count, 
+;DirtySet;count,
+;LiveSet;num,;count,;$T9,;enough,;tolerance,;approx,
+;REG MAP  $T9: r2
+;REMOVE $T9
+;Reg Map$T9 r2
+;IREND SPILLING count
+;IREND SPILLING $T9
+;STOREF 0.5 $T9
+;-----------------------------move 0.5 r2
+;r3->count, ;r2->$T9, 
+;DirtySet;count,;$T9,
+;LiveSet;num,;count,;$T9,;enough,;tolerance,;$T10,;approx,
+;REG MAP  approx: r1
+;REG MAP  num: r0
+;REMOVE num
+;IREND SPILLING count
+;IREND SPILLING $T9
+;IREND SPILLING $T10
+;IREND SPILLING approx
+;DIVF num approx $T10
+;-----------------------------move num r0
+;-----------------------------move approx r1
+;-----------------------------divr r1 r0
+;r3->count, ;r2->$T9, ;r0->$T10, ;r1->approx, 
+;DirtySet;count,;$T9,
+;LiveSet;$T11,;num,;count,;$T9,;enough,;tolerance,;approx,
+;REMOVE approx
+;IREND SPILLING $T11
+;IREND SPILLING count
+;IREND SPILLING $T9
+;IREND SPILLING $T10
+;LIVE
+;Dirty
+;REMOVE $T10
+;ADDF approx $T10 $T11
+;-----------------------------addr r0 r1
+;-----------------------------move r0 $-10
+;r1->$T11, ;r3->count, ;r2->$T9, 
+;DirtySet;count,;$T9,
+;LiveSet;$T12,;num,;count,;enough,;tolerance,;approx,
+;REMOVE $T9
+;REG MAP $T12 r2
+;IREND SPILLING $T12
+;IREND SPILLING $T11
+;LIVE
+;Dirty
+;REMOVE $T11
+;IREND SPILLING count
+;MULTF $T9 $T11 $T12
+;-----------------------------move r2 $-9
+;-----------------------------mulr r1 r2
+;-----------------------------move r1 $-11
+;r2->$T12, ;r3->count, 
+;DirtySet;count,
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,;approx,
+;REG MAP  newapprox: r1
+;REMOVE newapprox
+;Reg Mapnewapprox r1
+;IREND SPILLING $T12
+;LIVE
+;Dirty
+;REMOVE $T12
+;IREND SPILLING newapprox
+;IREND SPILLING count
+;STOREF $T12 newapprox
+;-----------------------------move r2 r1
+;-----------------------------move r2 $-12
+;r1->newapprox, ;r3->count, 
+;DirtySet;newapprox,;count,
+;LiveSet;newapprox,;$T13,;num,;count,;enough,;tolerance,
+;REG MAP  approx: r2
+;REMOVE approx
+;IREND SPILLING newapprox
+;IREND SPILLING $T13
+;IREND SPILLING count
+;SUBF approx newapprox $T13
+;-----------------------------move approx r2
+;-----------------------------subr r1 r2
+;r1->newapprox, ;r2->$T13, ;r3->count, 
+;DirtySet;newapprox,;count,
+;LiveSet;newapprox,;num,;count,;diff,;enough,;tolerance,
+;REG MAP  diff: r0
+;REMOVE diff
+;Reg Mapdiff r0
+;IREND SPILLING newapprox
+;IREND SPILLING $T13
+;LIVE
+;Dirty
+;REMOVE $T13
+;IREND SPILLING count
+;IREND SPILLING diff
+;STOREF $T13 diff
+;-----------------------------move r2 r0
+;-----------------------------move r2 $-13
+;r1->newapprox, ;r3->count, ;r0->diff, 
+;DirtySet;newapprox,;count,;diff,
+;LiveSet;newapprox,;$T14,;num,;count,;diff,;enough,;tolerance,
+;REG MAP  $T14: r2
+;REMOVE $T14
+;Reg Map$T14 r2
+;IREND SPILLING newapprox
+;IREND SPILLING $T14
+;IREND SPILLING count
+;IREND SPILLING diff
+;STOREF 0.0 $T14
+;-----------------------------move 0.0 r2
+;r1->newapprox, ;r2->$T14, ;r3->count, ;r0->diff, 
+;DirtySet;newapprox,;$T14,;count,;diff,
+;LiveSet;newapprox,;num,;count,;diff,;enough,;tolerance,
+;IREND SPILLING newapprox
+;IREND SPILLING $T14
+;LIVE
+;Dirty
+;REMOVE $T14
+;IREND SPILLING count
+;IREND SPILLING diff
+;End Of Block
+;IREND SPILLING newapprox
+;LIVE
+;Dirty
+;REMOVE newapprox
+;IREND SPILLING count
+;LIVE
+;Dirty
+;REMOVE count
+;IREND SPILLING diff
+;LIVE
+;Dirty
+;REMOVE diff
+;LE diff $T14 label4
+;-----------------------------cmpr r0 r2
+;-----------------------------move r2 $-14
+;-----------------------------move r1 newapprox
+;-----------------------------move r3 count
+;-----------------------------move r0 diff
+;-----------------------------jle label4
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;REG MAP  diff: r3
+;HIHI1
+;REMOVE diff
+;REG MAP  tolerance: r3
+;IREND SPILLING tolerance
+;End Of Block
+;IREND SPILLING tolerance
+;LIVE
+;REMOVE tolerance
+;GE diff tolerance label6
+;-----------------------------move diff r3
+;-----------------------------move r3 diff
+;-----------------------------move tolerance r3
+;-----------------------------move tolerance r3
+;-----------------------------cmpr r3 r3
+;-----------------------------jge label6
+
+;DirtySet
+;LiveSet;newapprox,;$T15,;num,;count,;tolerance,
+;REG MAP  $T15: r3
+;REMOVE $T15
+;Reg Map$T15 r3
+;IREND SPILLING $T15
+;STOREI 1 $T15
+;-----------------------------move 1 r3
+;r3->$T15, 
+;DirtySet;$T15,
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;REG MAP  enough: r2
+;REMOVE enough
+;Reg Mapenough r2
+;IREND SPILLING $T15
+;LIVE
+;Dirty
+;REMOVE $T15
+;IREND SPILLING enough
+;STOREI $T15 enough
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-15
+;r2->enough, 
+;DirtySet;enough,
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;IREND SPILLING enough
+;End Of Block
+;IREND SPILLING enough
+;LIVE
+;Dirty
+;REMOVE enough
+;JUMP label7
+;-----------------------------move r2 enough
+;-----------------------------jmp label7
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;End Of Block
+;LABEL label6
+;-----------------------------label label6
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;End Of Block
+;LABEL label7
+;-----------------------------label label7
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;End Of Block
+;JUMP label5
+;-----------------------------jmp label5
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;diff,;enough,;tolerance,
+;End Of Block
+;LABEL label4
+;-----------------------------label label4
+
+;DirtySet
+;LiveSet;newapprox,;$T16,;num,;count,;diff,;enough,;tolerance,
+;REG MAP  $T16: r3
+;REMOVE $T16
+;Reg Map$T16 r3
+;IREND SPILLING $T16
+;STOREF 0.0 $T16
+;-----------------------------move 0.0 r3
+;r3->$T16, 
+;DirtySet;$T16,
+;LiveSet;newapprox,;$T17,;num,;count,;diff,;enough,;tolerance,
+;REG MAP  tolerance: r2
+;REMOVE $T16
+;IREND SPILLING $T17
+;IREND SPILLING tolerance
+;SUBF $T16 tolerance $T17
+;-----------------------------move tolerance r2
+;-----------------------------move r3 $-16
+;-----------------------------subr r2 r3
+;r3->$T17, ;r2->tolerance, 
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;REG MAP  diff: r1
+;IREND SPILLING $T17
+;LIVE
+;Dirty
+;REMOVE $T17
+;IREND SPILLING diff
+;LIVE
+;REMOVE diff
+;IREND SPILLING tolerance
+;End Of Block
+;IREND SPILLING tolerance
+;LIVE
+;REMOVE tolerance
+;LE diff $T17 label8
+;-----------------------------move diff r1
+;-----------------------------cmpr r1 r3
+;-----------------------------move r3 $-17
+;-----------------------------jle label8
+
+;DirtySet
+;LiveSet;newapprox,;$T18,;num,;count,;tolerance,
+;REG MAP  $T18: r3
+;REMOVE $T18
+;Reg Map$T18 r3
+;IREND SPILLING $T18
+;STOREI 1 $T18
+;-----------------------------move 1 r3
+;r3->$T18, 
+;DirtySet;$T18,
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;REG MAP  enough: r2
+;REMOVE enough
+;Reg Mapenough r2
+;IREND SPILLING $T18
+;LIVE
+;Dirty
+;REMOVE $T18
+;IREND SPILLING enough
+;STOREI $T18 enough
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-18
+;r2->enough, 
+;DirtySet;enough,
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;IREND SPILLING enough
+;End Of Block
+;IREND SPILLING enough
+;LIVE
+;Dirty
+;REMOVE enough
+;JUMP label9
+;-----------------------------move r2 enough
+;-----------------------------jmp label9
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;End Of Block
+;LABEL label8
+;-----------------------------label label8
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;End Of Block
+;LABEL label9
+;-----------------------------label label9
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;End Of Block
+;JUMP label5
+;-----------------------------jmp label5
+
+;DirtySet
+;LiveSet;newapprox,;num,;count,;enough,;tolerance,
+;End Of Block
+;LABEL label5
+;-----------------------------label label5
+
+;DirtySet
+;LiveSet;num,;count,;enough,;tolerance,;approx,
+;REG MAP  newapprox: r3
+;REG MAP  approx: r2
+;REMOVE approx
+;Reg Mapapprox r2
+;IREND SPILLING newapprox
+;LIVE
+;REMOVE newapprox
+;IREND SPILLING approx
+;STOREF newapprox approx
+;-----------------------------move newapprox r3
+;-----------------------------move r3 r2
+;r2->approx, 
+;DirtySet;approx,
+;LiveSet;num,;count,;enough,;tolerance,;approx,
+;IREND SPILLING approx
+;LABEL label2
+;-----------------------------label label2
+;r2->approx, 
+;DirtySet;approx,
+;LiveSet;num,;count,;enough,;tolerance,;approx,
+;IREND SPILLING approx
+;End Of Block
+;IREND SPILLING approx
+;LIVE
+;Dirty
+;REMOVE approx
+;JUMP label1
+;-----------------------------move r2 approx
+;-----------------------------jmp label1
+
+;DirtySet
+;LiveSet;count,;approx,
+;End Of Block
+;LABEL label3
+;-----------------------------label label3
+
+;DirtySet
+;LiveSet;count,
+;REG MAP  approx: r3
+;IREND SPILLING approx
+;LIVE
+;REMOVE approx
+;WRITEF approx
+;-----------------------------move approx r3
+;-----------------------------sys writer r3
+
+;DirtySet
+;LiveSet
+;REG MAP  count: r3
+;IREND SPILLING count
+;LIVE
+;REMOVE count
+;WRITEI count
+;-----------------------------move count r3
+;-----------------------------sys writei r3
+
+;DirtySet
+;LiveSet
+;RET 
+;-----------------------------unlnk
+;-----------------------------ret
+;-----------------------------used for debug-----------------------
+label main
+link 18
+move 0.0001 r3
+move r3 r2
+move r3 $-1
+move 7.0 r3
+move r3 r1
+move r3 $-2
+move r1 r3
+move 0 r0
+move r2 tolerance
+move r0 r2
+move r0 $-3
+move 0.0 r0
+move r1 num
+move r0 r1
+move r0 $-4
+move r1 diff
+move 0 r1
+move r1 r0
+move r1 $-5
+move r2 count
+move r0 enough
+move r3 approx
+label label1
+move 1 r3
+move enough r2
+cmpi r2 r3
+move r3 $-6
+jeq label3
+move 1 r3
+move count r2
+addi r3 r2
+move r3 $-7
+move r2 r3
+move r2 $-8
+move 0.5 r2
+move num r0
+move approx r1
+divr r1 r0
+addr r0 r1
+move r0 $-10
+move r2 $-9
+mulr r1 r2
+move r1 $-11
+move r2 r1
+move r2 $-12
+move approx r2
+subr r1 r2
+move r2 r0
+move r2 $-13
+move 0.0 r2
+cmpr r0 r2
+move r2 $-14
+move r1 newapprox
+move r3 count
+move r0 diff
+jle label4
+move diff r3
+move r3 diff
+move tolerance r3
+move tolerance r3
+cmpr r3 r3
+jge label6
+move 1 r3
+move r3 r2
+move r3 $-15
+move r2 enough
+jmp label7
+label label6
+label label7
+jmp label5
+label label4
+move 0.0 r3
+move tolerance r2
+move r3 $-16
+subr r2 r3
+move diff r1
+cmpr r1 r3
+move r3 $-17
+jle label8
+move 1 r3
+move r3 r2
+move r3 $-18
+move r2 enough
+jmp label9
+label label8
+label label9
+jmp label5
+label label5
+move newapprox r3
+move r3 r2
+label label2
+move r2 approx
+jmp label1
+label label3
+move approx r3
+sys writer r3
+move count r3
+sys writei r3
+unlnk
+ret
+end

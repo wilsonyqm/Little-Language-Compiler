@@ -1,0 +1,408 @@
+;IR code
+;LABEL main
+;LINK 
+;STOREF 7.0 $T1
+;STOREF $T1 num
+;STOREI 1 $T2
+;STOREI $T2 j
+;STOREF num approx
+;STOREI 100 $T3
+;STOREI $T3 i
+;LABEL label1
+;STOREI 0 $T4
+;EQ i $T4 label3
+;STOREF 0.5 $T7
+;DIVF num approx $T8
+;ADDF approx $T8 $T9
+;MULTF $T7 $T9 $T10
+;STOREF $T10 newapprox
+;STOREF newapprox approx
+;LABEL label2
+;STOREI 1 $T5
+;SUBI i $T5 $T6
+;STOREI $T6 i
+;JUMP label1
+;LABEL label3
+;WRITEF approx
+;RET 
+
+;tiny code
+var i
+var j
+var newapprox
+var approx
+var num
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;-----------------------------used for debug-----------------------
+
+;DirtySet
+;LiveSet
+;End Of Block
+;LABEL main
+;-----------------------------label main
+
+;DirtySet
+;LiveSet
+;LINK 
+;-----------------------------link 10
+
+;DirtySet
+;LiveSet;$T1,
+;REG MAP  $T1: r3
+;REMOVE $T1
+;Reg Map$T1 r3
+;IREND SPILLING $T1
+;STOREF 7.0 $T1
+;-----------------------------move 7.0 r3
+;r3->$T1, 
+;DirtySet;$T1,
+;LiveSet;num,
+;REG MAP  num: r2
+;REMOVE num
+;Reg Mapnum r2
+;IREND SPILLING $T1
+;LIVE
+;Dirty
+;REMOVE $T1
+;IREND SPILLING num
+;STOREF $T1 num
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-1
+;r2->num, 
+;DirtySet;num,
+;LiveSet;$T2,;num,
+;REG MAP  $T2: r3
+;REMOVE $T2
+;Reg Map$T2 r3
+;IREND SPILLING $T2
+;IREND SPILLING num
+;STOREI 1 $T2
+;-----------------------------move 1 r3
+;r3->$T2, ;r2->num, 
+;DirtySet;$T2,;num,
+;LiveSet;num,
+;REG MAP  j: r1
+;REMOVE j
+;Reg Mapj r1
+;IREND SPILLING $T2
+;LIVE
+;Dirty
+;REMOVE $T2
+;IREND SPILLING num
+;IREND SPILLING j
+;LIVE
+;Dirty
+;REMOVE j
+;STOREI $T2 j
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-2
+;-----------------------------move r1 j
+;r2->num, 
+;DirtySet;num,
+;LiveSet;num,;approx,
+;REG MAP  approx: r3
+;REMOVE approx
+;Reg Mapapprox r3
+;IREND SPILLING num
+;IREND SPILLING approx
+;STOREF num approx
+;-----------------------------move r2 r3
+;r2->num, ;r3->approx, 
+;DirtySet;num,;approx,
+;LiveSet;$T3,;num,;approx,
+;REG MAP  $T3: r1
+;REMOVE $T3
+;Reg Map$T3 r1
+;IREND SPILLING $T3
+;IREND SPILLING num
+;IREND SPILLING approx
+;STOREI 100 $T3
+;-----------------------------move 100 r1
+;r1->$T3, ;r2->num, ;r3->approx, 
+;DirtySet;$T3,;num,;approx,
+;LiveSet;num,;i,;approx,
+;REG MAP  i: r0
+;REMOVE i
+;Reg Mapi r0
+;IREND SPILLING $T3
+;LIVE
+;Dirty
+;REMOVE $T3
+;IREND SPILLING num
+;IREND SPILLING i
+;IREND SPILLING approx
+;STOREI $T3 i
+;-----------------------------move r1 r0
+;-----------------------------move r1 $-3
+;r2->num, ;r0->i, ;r3->approx, 
+;DirtySet;num,;i,;approx,
+;LiveSet;num,;i,;approx,
+;IREND SPILLING num
+;IREND SPILLING i
+;IREND SPILLING approx
+;End Of Block
+;IREND SPILLING num
+;LIVE
+;Dirty
+;REMOVE num
+;IREND SPILLING i
+;LIVE
+;Dirty
+;REMOVE i
+;IREND SPILLING approx
+;LIVE
+;Dirty
+;REMOVE approx
+;LABEL label1
+;-----------------------------move r2 num
+;-----------------------------move r0 i
+;-----------------------------move r3 approx
+;-----------------------------label label1
+
+;DirtySet
+;LiveSet;$T4,;num,;i,;approx,
+;REG MAP  $T4: r3
+;REMOVE $T4
+;Reg Map$T4 r3
+;IREND SPILLING $T4
+;STOREI 0 $T4
+;-----------------------------move 0 r3
+;r3->$T4, 
+;DirtySet;$T4,
+;LiveSet;num,;i,;approx,
+;REG MAP  i: r2
+;IREND SPILLING $T4
+;LIVE
+;Dirty
+;REMOVE $T4
+;IREND SPILLING i
+;End Of Block
+;IREND SPILLING i
+;LIVE
+;REMOVE i
+;EQ i $T4 label3
+;-----------------------------move i r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-4
+;-----------------------------jeq label3
+
+;DirtySet
+;LiveSet;$T7,;num,;i,;approx,
+;REG MAP  $T7: r3
+;REMOVE $T7
+;Reg Map$T7 r3
+;IREND SPILLING $T7
+;STOREF 0.5 $T7
+;-----------------------------move 0.5 r3
+;r3->$T7, 
+;DirtySet;$T7,
+;LiveSet;$T7,;num,;$T8,;i,;approx,
+;REG MAP  approx: r2
+;REG MAP  num: r1
+;REMOVE num
+;IREND SPILLING $T7
+;IREND SPILLING $T8
+;IREND SPILLING approx
+;DIVF num approx $T8
+;-----------------------------move num r1
+;-----------------------------move approx r2
+;-----------------------------divr r2 r1
+;r3->$T7, ;r1->$T8, ;r2->approx, 
+;DirtySet;$T7,
+;LiveSet;$T7,;num,;i,;$T9,
+;REMOVE approx
+;IREND SPILLING $T7
+;IREND SPILLING $T8
+;LIVE
+;Dirty
+;REMOVE $T8
+;IREND SPILLING $T9
+;ADDF approx $T8 $T9
+;-----------------------------addr r1 r2
+;-----------------------------move r1 $-8
+;r3->$T7, ;r2->$T9, 
+;DirtySet;$T7,
+;LiveSet;num,;i,;$T10,
+;REMOVE $T7
+;REG MAP $T10 r3
+;IREND SPILLING $T9
+;LIVE
+;Dirty
+;REMOVE $T9
+;IREND SPILLING $T10
+;MULTF $T7 $T9 $T10
+;-----------------------------move r3 $-7
+;-----------------------------mulr r2 r3
+;-----------------------------move r2 $-9
+;r3->$T10, 
+;DirtySet
+;LiveSet;newapprox,;num,;i,
+;REG MAP  newapprox: r2
+;REMOVE newapprox
+;Reg Mapnewapprox r2
+;IREND SPILLING newapprox
+;IREND SPILLING $T10
+;LIVE
+;Dirty
+;REMOVE $T10
+;STOREF $T10 newapprox
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-10
+;r2->newapprox, 
+;DirtySet;newapprox,
+;LiveSet;num,;i,;approx,
+;REG MAP  approx: r3
+;REMOVE approx
+;Reg Mapapprox r3
+;IREND SPILLING newapprox
+;LIVE
+;Dirty
+;REMOVE newapprox
+;IREND SPILLING approx
+;STOREF newapprox approx
+;-----------------------------move r2 r3
+;-----------------------------move r2 newapprox
+;r3->approx, 
+;DirtySet;approx,
+;LiveSet;num,;i,;approx,
+;IREND SPILLING approx
+;LABEL label2
+;-----------------------------label label2
+;r3->approx, 
+;DirtySet;approx,
+;LiveSet;$T5,;num,;i,;approx,
+;REG MAP  $T5: r2
+;REMOVE $T5
+;Reg Map$T5 r2
+;IREND SPILLING $T5
+;IREND SPILLING approx
+;STOREI 1 $T5
+;-----------------------------move 1 r2
+;r2->$T5, ;r3->approx, 
+;DirtySet;$T5,;approx,
+;LiveSet;$T6,;num,;approx,
+;REG MAP  i: r1
+;REMOVE i
+;IREND SPILLING $T5
+;LIVE
+;Dirty
+;REMOVE $T5
+;IREND SPILLING $T6
+;IREND SPILLING approx
+;SUBI i $T5 $T6
+;-----------------------------move i r1
+;-----------------------------subi r2 r1
+;-----------------------------move r2 $-5
+;r1->$T6, ;r3->approx, 
+;DirtySet;approx,
+;LiveSet;num,;i,;approx,
+;REG MAP  i: r2
+;REMOVE i
+;Reg Mapi r2
+;IREND SPILLING $T6
+;LIVE
+;Dirty
+;REMOVE $T6
+;IREND SPILLING i
+;IREND SPILLING approx
+;STOREI $T6 i
+;-----------------------------move r1 r2
+;-----------------------------move r1 $-6
+;r2->i, ;r3->approx, 
+;DirtySet;i,;approx,
+;LiveSet;num,;i,;approx,
+;IREND SPILLING i
+;IREND SPILLING approx
+;End Of Block
+;IREND SPILLING i
+;LIVE
+;Dirty
+;REMOVE i
+;IREND SPILLING approx
+;LIVE
+;Dirty
+;REMOVE approx
+;JUMP label1
+;-----------------------------move r2 i
+;-----------------------------move r3 approx
+;-----------------------------jmp label1
+
+;DirtySet
+;LiveSet;approx,
+;End Of Block
+;LABEL label3
+;-----------------------------label label3
+
+;DirtySet
+;LiveSet
+;REG MAP  approx: r3
+;IREND SPILLING approx
+;LIVE
+;REMOVE approx
+;WRITEF approx
+;-----------------------------move approx r3
+;-----------------------------sys writer r3
+
+;DirtySet
+;LiveSet
+;RET 
+;-----------------------------unlnk
+;-----------------------------ret
+;-----------------------------used for debug-----------------------
+label main
+link 10
+move 7.0 r3
+move r3 r2
+move r3 $-1
+move 1 r3
+move r3 r1
+move r3 $-2
+move r1 j
+move r2 r3
+move 100 r1
+move r1 r0
+move r1 $-3
+move r2 num
+move r0 i
+move r3 approx
+label label1
+move 0 r3
+move i r2
+cmpi r2 r3
+move r3 $-4
+jeq label3
+move 0.5 r3
+move num r1
+move approx r2
+divr r2 r1
+addr r1 r2
+move r1 $-8
+move r3 $-7
+mulr r2 r3
+move r2 $-9
+move r3 r2
+move r3 $-10
+move r2 r3
+move r2 newapprox
+label label2
+move 1 r2
+move i r1
+subi r2 r1
+move r2 $-5
+move r1 r2
+move r1 $-6
+move r2 i
+move r3 approx
+jmp label1
+label label3
+move approx r3
+sys writer r3
+unlnk
+ret
+end

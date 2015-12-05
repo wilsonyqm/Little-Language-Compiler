@@ -16,7 +16,9 @@ public class Function{
 	public CodeGenerater getCodeGenerater(){
 		return this.codeGenerater;
 	}
-	
+	public void setTnum() {
+		this.codeGenerater.setTnum(this.registernum);
+	}
 	public SymbolTable getTable(){
 		return this.symbolTable;
 	}

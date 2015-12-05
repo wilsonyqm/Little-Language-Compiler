@@ -349,6 +349,7 @@ public class MicroIRListener extends MicroBaseListener{
 		int symbolnum = getSymbolNum(getFunction(ctx).getTable());
 		CodeGenerater codeGenerater = getFunction(ctx).getCodeGenerater();
 		codeGenerater.addReturn();
+		getFunction(ctx).setTnum();
 		codeGenerater.setlocalVarNum(symbolnum);
 		functionList.add(getFunction(ctx));
 		tree.exitscope();

@@ -1,0 +1,794 @@
+;IR code
+;LABEL main
+;LINK 
+;STOREI 1 $T1
+;STOREI $T1 b
+;STOREI 1 $T2
+;STOREI $T2 a
+;LABEL label1
+;STOREI 120 $T3
+;GT a $T3 label3
+;STOREI 1 $T6
+;NE b $T6 label4
+;STOREI 1 $T7
+;MULTI $T7 a $T8
+;STOREI $T8 g
+;WRITEI g
+;JUMP label5
+;LABEL label4
+;STOREI 2 $T9
+;NE b $T9 label6
+;STOREI 2 $T10
+;MULTI $T10 a $T11
+;STOREI $T11 p
+;WRITEI p
+;JUMP label7
+;LABEL label6
+;STOREI 3 $T12
+;NE b $T12 label8
+;STOREI 3 $T13
+;MULTI $T13 a $T14
+;STOREI $T14 k
+;WRITEI k
+;JUMP label9
+;LABEL label8
+;STOREI 4 $T15
+;NE b $T15 label10
+;STOREI 4 $T16
+;MULTI $T16 a $T17
+;STOREI $T17 u
+;WRITEI u
+;JUMP label11
+;LABEL label10
+;LABEL label11
+;JUMP label9
+;LABEL label9
+;JUMP label7
+;LABEL label7
+;JUMP label5
+;LABEL label5
+;STOREI 1 $T18
+;ADDI b $T18 $T19
+;STOREI $T19 b
+;LABEL label2
+;STOREI 20 $T4
+;ADDI a $T4 $T5
+;STOREI $T5 a
+;JUMP label1
+;LABEL label3
+;RET 
+
+;tiny code
+var a
+var b
+var k
+var g
+var p
+var u
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;-----------------------------used for debug-----------------------
+
+;DirtySet
+;LiveSet
+;End Of Block
+;LABEL main
+;-----------------------------label main
+
+;DirtySet
+;LiveSet
+;LINK 
+;-----------------------------link 19
+
+;DirtySet
+;LiveSet;$T1,
+;REG MAP  $T1: r3
+;REMOVE $T1
+;Reg Map$T1 r3
+;IREND SPILLING $T1
+;STOREI 1 $T1
+;-----------------------------move 1 r3
+;r3->$T1, 
+;DirtySet;$T1,
+;LiveSet;b,
+;REG MAP  b: r2
+;REMOVE b
+;Reg Mapb r2
+;IREND SPILLING $T1
+;LIVE
+;Dirty
+;REMOVE $T1
+;IREND SPILLING b
+;STOREI $T1 b
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-1
+;r2->b, 
+;DirtySet;b,
+;LiveSet;b,;$T2,
+;REG MAP  $T2: r3
+;REMOVE $T2
+;Reg Map$T2 r3
+;IREND SPILLING b
+;IREND SPILLING $T2
+;STOREI 1 $T2
+;-----------------------------move 1 r3
+;r2->b, ;r3->$T2, 
+;DirtySet;b,;$T2,
+;LiveSet;a,;b,
+;REG MAP  a: r1
+;REMOVE a
+;Reg Mapa r1
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T2
+;LIVE
+;Dirty
+;REMOVE $T2
+;STOREI $T2 a
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-2
+;r1->a, ;r2->b, 
+;DirtySet;a,;b,
+;LiveSet;a,;b,
+;IREND SPILLING a
+;IREND SPILLING b
+;End Of Block
+;IREND SPILLING a
+;LIVE
+;Dirty
+;REMOVE a
+;IREND SPILLING b
+;LIVE
+;Dirty
+;REMOVE b
+;LABEL label1
+;-----------------------------move r1 a
+;-----------------------------move r2 b
+;-----------------------------label label1
+
+;DirtySet
+;LiveSet;a,;b,;$T3,
+;REG MAP  $T3: r3
+;REMOVE $T3
+;Reg Map$T3 r3
+;IREND SPILLING $T3
+;STOREI 120 $T3
+;-----------------------------move 120 r3
+;r3->$T3, 
+;DirtySet;$T3,
+;LiveSet;a,;b,
+;REG MAP  a: r2
+;IREND SPILLING a
+;IREND SPILLING $T3
+;LIVE
+;Dirty
+;REMOVE $T3
+;End Of Block
+;IREND SPILLING a
+;LIVE
+;REMOVE a
+;GT a $T3 label3
+;-----------------------------move a r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-3
+;-----------------------------jgt label3
+
+;DirtySet
+;LiveSet;a,;b,;$T6,
+;REG MAP  $T6: r3
+;REMOVE $T6
+;Reg Map$T6 r3
+;IREND SPILLING $T6
+;STOREI 1 $T6
+;-----------------------------move 1 r3
+;r3->$T6, 
+;DirtySet;$T6,
+;LiveSet;a,;b,
+;REG MAP  b: r2
+;IREND SPILLING b
+;IREND SPILLING $T6
+;LIVE
+;Dirty
+;REMOVE $T6
+;End Of Block
+;IREND SPILLING b
+;LIVE
+;REMOVE b
+;NE b $T6 label4
+;-----------------------------move b r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-6
+;-----------------------------jne label4
+
+;DirtySet
+;LiveSet;a,;b,;$T7,
+;REG MAP  $T7: r3
+;REMOVE $T7
+;Reg Map$T7 r3
+;IREND SPILLING $T7
+;STOREI 1 $T7
+;-----------------------------move 1 r3
+;r3->$T7, 
+;DirtySet;$T7,
+;LiveSet;a,;b,;$T8,
+;REG MAP  a: r2
+;REMOVE $T7
+;IREND SPILLING a
+;IREND SPILLING $T8
+;MULTI $T7 a $T8
+;-----------------------------move a r2
+;-----------------------------move r3 $-7
+;-----------------------------muli r2 r3
+;r2->a, ;r3->$T8, 
+;DirtySet
+;LiveSet;a,;b,;g,
+;REG MAP  g: r1
+;REMOVE g
+;Reg Mapg r1
+;IREND SPILLING a
+;IREND SPILLING g
+;IREND SPILLING $T8
+;LIVE
+;Dirty
+;REMOVE $T8
+;STOREI $T8 g
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-8
+;r2->a, ;r1->g, 
+;DirtySet;g,
+;LiveSet;a,;b,
+;IREND SPILLING a
+;IREND SPILLING g
+;LIVE
+;Dirty
+;REMOVE g
+;WRITEI g
+;-----------------------------sys writei r1
+;-----------------------------move r1 g
+;r2->a, 
+;DirtySet
+;LiveSet;a,;b,
+;IREND SPILLING a
+;End Of Block
+;IREND SPILLING a
+;LIVE
+;REMOVE a
+;JUMP label5
+;-----------------------------jmp label5
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label4
+;-----------------------------label label4
+
+;DirtySet
+;LiveSet;a,;b,;$T9,
+;REG MAP  $T9: r3
+;REMOVE $T9
+;Reg Map$T9 r3
+;IREND SPILLING $T9
+;STOREI 2 $T9
+;-----------------------------move 2 r3
+;r3->$T9, 
+;DirtySet;$T9,
+;LiveSet;a,;b,
+;REG MAP  b: r2
+;IREND SPILLING b
+;IREND SPILLING $T9
+;LIVE
+;Dirty
+;REMOVE $T9
+;End Of Block
+;IREND SPILLING b
+;LIVE
+;REMOVE b
+;NE b $T9 label6
+;-----------------------------move b r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-9
+;-----------------------------jne label6
+
+;DirtySet
+;LiveSet;a,;b,;$T10,
+;REG MAP  $T10: r3
+;REMOVE $T10
+;Reg Map$T10 r3
+;IREND SPILLING $T10
+;STOREI 2 $T10
+;-----------------------------move 2 r3
+;r3->$T10, 
+;DirtySet;$T10,
+;LiveSet;a,;$T11,;b,
+;REG MAP  a: r2
+;REMOVE $T10
+;IREND SPILLING a
+;IREND SPILLING $T11
+;MULTI $T10 a $T11
+;-----------------------------move a r2
+;-----------------------------move r3 $-10
+;-----------------------------muli r2 r3
+;r2->a, ;r3->$T11, 
+;DirtySet
+;LiveSet;p,;a,;b,
+;REG MAP  p: r1
+;REMOVE p
+;Reg Mapp r1
+;IREND SPILLING p
+;IREND SPILLING a
+;IREND SPILLING $T11
+;LIVE
+;Dirty
+;REMOVE $T11
+;STOREI $T11 p
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-11
+;r1->p, ;r2->a, 
+;DirtySet;p,
+;LiveSet;a,;b,
+;IREND SPILLING p
+;LIVE
+;Dirty
+;REMOVE p
+;IREND SPILLING a
+;WRITEI p
+;-----------------------------sys writei r1
+;-----------------------------move r1 p
+;r2->a, 
+;DirtySet
+;LiveSet;a,;b,
+;IREND SPILLING a
+;End Of Block
+;IREND SPILLING a
+;LIVE
+;REMOVE a
+;JUMP label7
+;-----------------------------jmp label7
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label6
+;-----------------------------label label6
+
+;DirtySet
+;LiveSet;$T12,;a,;b,
+;REG MAP  $T12: r3
+;REMOVE $T12
+;Reg Map$T12 r3
+;IREND SPILLING $T12
+;STOREI 3 $T12
+;-----------------------------move 3 r3
+;r3->$T12, 
+;DirtySet;$T12,
+;LiveSet;a,;b,
+;REG MAP  b: r2
+;IREND SPILLING $T12
+;LIVE
+;Dirty
+;REMOVE $T12
+;IREND SPILLING b
+;End Of Block
+;IREND SPILLING b
+;LIVE
+;REMOVE b
+;NE b $T12 label8
+;-----------------------------move b r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-12
+;-----------------------------jne label8
+
+;DirtySet
+;LiveSet;a,;b,;$T13,
+;REG MAP  $T13: r3
+;REMOVE $T13
+;Reg Map$T13 r3
+;IREND SPILLING $T13
+;STOREI 3 $T13
+;-----------------------------move 3 r3
+;r3->$T13, 
+;DirtySet;$T13,
+;LiveSet;a,;b,;$T14,
+;REG MAP  a: r2
+;REMOVE $T13
+;IREND SPILLING a
+;IREND SPILLING $T14
+;MULTI $T13 a $T14
+;-----------------------------move a r2
+;-----------------------------move r3 $-13
+;-----------------------------muli r2 r3
+;r2->a, ;r3->$T14, 
+;DirtySet
+;LiveSet;a,;b,;k,
+;REG MAP  k: r1
+;REMOVE k
+;Reg Mapk r1
+;IREND SPILLING a
+;IREND SPILLING $T14
+;LIVE
+;Dirty
+;REMOVE $T14
+;IREND SPILLING k
+;STOREI $T14 k
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-14
+;r2->a, ;r1->k, 
+;DirtySet;k,
+;LiveSet;a,;b,
+;IREND SPILLING a
+;IREND SPILLING k
+;LIVE
+;Dirty
+;REMOVE k
+;WRITEI k
+;-----------------------------sys writei r1
+;-----------------------------move r1 k
+;r2->a, 
+;DirtySet
+;LiveSet;a,;b,
+;IREND SPILLING a
+;End Of Block
+;IREND SPILLING a
+;LIVE
+;REMOVE a
+;JUMP label9
+;-----------------------------jmp label9
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label8
+;-----------------------------label label8
+
+;DirtySet
+;LiveSet;a,;b,;$T15,
+;REG MAP  $T15: r3
+;REMOVE $T15
+;Reg Map$T15 r3
+;IREND SPILLING $T15
+;STOREI 4 $T15
+;-----------------------------move 4 r3
+;r3->$T15, 
+;DirtySet;$T15,
+;LiveSet;a,;b,
+;REG MAP  b: r2
+;IREND SPILLING b
+;IREND SPILLING $T15
+;LIVE
+;Dirty
+;REMOVE $T15
+;End Of Block
+;IREND SPILLING b
+;LIVE
+;REMOVE b
+;NE b $T15 label10
+;-----------------------------move b r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-15
+;-----------------------------jne label10
+
+;DirtySet
+;LiveSet;a,;b,;$T16,
+;REG MAP  $T16: r3
+;REMOVE $T16
+;Reg Map$T16 r3
+;IREND SPILLING $T16
+;STOREI 4 $T16
+;-----------------------------move 4 r3
+;r3->$T16, 
+;DirtySet;$T16,
+;LiveSet;a,;b,;$T17,
+;REG MAP  a: r2
+;REMOVE $T16
+;IREND SPILLING a
+;IREND SPILLING $T17
+;MULTI $T16 a $T17
+;-----------------------------move a r2
+;-----------------------------move r3 $-16
+;-----------------------------muli r2 r3
+;r2->a, ;r3->$T17, 
+;DirtySet
+;LiveSet;a,;b,;u,
+;REG MAP  u: r1
+;REMOVE u
+;Reg Mapu r1
+;IREND SPILLING a
+;IREND SPILLING u
+;IREND SPILLING $T17
+;LIVE
+;Dirty
+;REMOVE $T17
+;STOREI $T17 u
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-17
+;r2->a, ;r1->u, 
+;DirtySet;u,
+;LiveSet;a,;b,
+;IREND SPILLING a
+;IREND SPILLING u
+;LIVE
+;Dirty
+;REMOVE u
+;WRITEI u
+;-----------------------------sys writei r1
+;-----------------------------move r1 u
+;r2->a, 
+;DirtySet
+;LiveSet;a,;b,
+;IREND SPILLING a
+;End Of Block
+;IREND SPILLING a
+;LIVE
+;REMOVE a
+;JUMP label11
+;-----------------------------jmp label11
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label10
+;-----------------------------label label10
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label11
+;-----------------------------label label11
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;JUMP label9
+;-----------------------------jmp label9
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label9
+;-----------------------------label label9
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;JUMP label7
+;-----------------------------jmp label7
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label7
+;-----------------------------label label7
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;JUMP label5
+;-----------------------------jmp label5
+
+;DirtySet
+;LiveSet;a,;b,
+;End Of Block
+;LABEL label5
+;-----------------------------label label5
+
+;DirtySet
+;LiveSet;a,;b,;$T18,
+;REG MAP  $T18: r3
+;REMOVE $T18
+;Reg Map$T18 r3
+;IREND SPILLING $T18
+;STOREI 1 $T18
+;-----------------------------move 1 r3
+;r3->$T18, 
+;DirtySet;$T18,
+;LiveSet;a,;$T19,
+;REG MAP  b: r2
+;REMOVE b
+;IREND SPILLING $T18
+;LIVE
+;Dirty
+;REMOVE $T18
+;IREND SPILLING $T19
+;ADDI b $T18 $T19
+;-----------------------------move b r2
+;-----------------------------addi r3 r2
+;-----------------------------move r3 $-18
+;r2->$T19, 
+;DirtySet
+;LiveSet;a,;b,
+;REG MAP  b: r3
+;REMOVE b
+;Reg Mapb r3
+;IREND SPILLING b
+;IREND SPILLING $T19
+;LIVE
+;Dirty
+;REMOVE $T19
+;STOREI $T19 b
+;-----------------------------move r2 r3
+;-----------------------------move r2 $-19
+;r3->b, 
+;DirtySet;b,
+;LiveSet;a,;b,
+;IREND SPILLING b
+;LABEL label2
+;-----------------------------label label2
+;r3->b, 
+;DirtySet;b,
+;LiveSet;a,;b,;$T4,
+;REG MAP  $T4: r2
+;REMOVE $T4
+;Reg Map$T4 r2
+;IREND SPILLING b
+;IREND SPILLING $T4
+;STOREI 20 $T4
+;-----------------------------move 20 r2
+;r3->b, ;r2->$T4, 
+;DirtySet;b,;$T4,
+;LiveSet;b,;$T5,
+;REG MAP  a: r1
+;REMOVE a
+;IREND SPILLING b
+;IREND SPILLING $T4
+;LIVE
+;Dirty
+;REMOVE $T4
+;IREND SPILLING $T5
+;ADDI a $T4 $T5
+;-----------------------------move a r1
+;-----------------------------addi r2 r1
+;-----------------------------move r2 $-4
+;r3->b, ;r1->$T5, 
+;DirtySet;b,
+;LiveSet;a,;b,
+;REG MAP  a: r2
+;REMOVE a
+;Reg Mapa r2
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T5
+;LIVE
+;Dirty
+;REMOVE $T5
+;STOREI $T5 a
+;-----------------------------move r1 r2
+;-----------------------------move r1 $-5
+;r2->a, ;r3->b, 
+;DirtySet;a,;b,
+;LiveSet;a,;b,
+;IREND SPILLING a
+;IREND SPILLING b
+;End Of Block
+;IREND SPILLING a
+;LIVE
+;Dirty
+;REMOVE a
+;IREND SPILLING b
+;LIVE
+;Dirty
+;REMOVE b
+;JUMP label1
+;-----------------------------move r2 a
+;-----------------------------move r3 b
+;-----------------------------jmp label1
+
+;DirtySet
+;LiveSet
+;End Of Block
+;LABEL label3
+;-----------------------------label label3
+
+;DirtySet
+;LiveSet
+;RET 
+;-----------------------------unlnk
+;-----------------------------ret
+;-----------------------------used for debug-----------------------
+label main
+link 19
+move 1 r3
+move r3 r2
+move r3 $-1
+move 1 r3
+move r3 r1
+move r3 $-2
+move r1 a
+move r2 b
+label label1
+move 120 r3
+move a r2
+cmpi r2 r3
+move r3 $-3
+jgt label3
+move 1 r3
+move b r2
+cmpi r2 r3
+move r3 $-6
+jne label4
+move 1 r3
+move a r2
+move r3 $-7
+muli r2 r3
+move r3 r1
+move r3 $-8
+sys writei r1
+move r1 g
+jmp label5
+label label4
+move 2 r3
+move b r2
+cmpi r2 r3
+move r3 $-9
+jne label6
+move 2 r3
+move a r2
+move r3 $-10
+muli r2 r3
+move r3 r1
+move r3 $-11
+sys writei r1
+move r1 p
+jmp label7
+label label6
+move 3 r3
+move b r2
+cmpi r2 r3
+move r3 $-12
+jne label8
+move 3 r3
+move a r2
+move r3 $-13
+muli r2 r3
+move r3 r1
+move r3 $-14
+sys writei r1
+move r1 k
+jmp label9
+label label8
+move 4 r3
+move b r2
+cmpi r2 r3
+move r3 $-15
+jne label10
+move 4 r3
+move a r2
+move r3 $-16
+muli r2 r3
+move r3 r1
+move r3 $-17
+sys writei r1
+move r1 u
+jmp label11
+label label10
+label label11
+jmp label9
+label label9
+jmp label7
+label label7
+jmp label5
+label label5
+move 1 r3
+move b r2
+addi r3 r2
+move r3 $-18
+move r2 r3
+move r2 $-19
+label label2
+move 20 r2
+move a r1
+addi r2 r1
+move r2 $-4
+move r1 r2
+move r1 $-5
+move r2 a
+move r3 b
+jmp label1
+label label3
+unlnk
+ret
+end

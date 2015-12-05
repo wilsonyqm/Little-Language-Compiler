@@ -233,8 +233,7 @@ subi r1 r2
 move r2 $-8
 addi r3 r2
 ;STOREI $T9 c	 live vars: c, d, a, b, 
-;ensure(): $T9 has register r2 { r0->d r1->a r2->$T9 r3->b }
-;allocate() has to spill b
+I;allocate() has to spill b
 ;Spilling variable: b
 move r3 b
 ;ensure(): c gets register r3 { r0->d r1->a r2->$T9 r3->c }

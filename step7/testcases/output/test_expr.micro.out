@@ -1,0 +1,1456 @@
+;IR code
+;LABEL main
+;LINK 
+;STOREI 1 $T1
+;STOREI $T1 a
+;STOREI 2 $T2
+;STOREI $T2 b
+;STOREI 10 $T3
+;STOREI $T3 c
+;STOREI 20 $T4
+;STOREI $T4 d
+;WRITEI a
+;WRITEI b
+;WRITEI c
+;WRITEI d
+;ADDI a b $T5
+;STOREI $T5 a
+;WRITEI a
+;MULTI a c $T6
+;STOREI $T6 b
+;WRITEI b
+;STOREI 0 $T7
+;SUBI $T7 a $T8
+;ADDI $T8 b $T9
+;STOREI $T9 c
+;WRITEI c
+;STOREI 0 $T10
+;SUBI $T10 d $T11
+;STOREI $T11 d
+;WRITEI d
+;ADDI a b $T12
+;ADDI d c $T13
+;MULTI $T12 $T13 $T14
+;ADDI a b $T15
+;ADDI $T15 c $T16
+;ADDI $T16 d $T17
+;DIVI $T17 a $T18
+;SUBI $T14 $T18 $T19
+;STOREI $T19 a
+;WRITEI a
+;STOREI 10 $T20
+;ADDI a $T20 $T21
+;STOREI $T21 a
+;WRITEI a
+;ADDI b a $T22
+;STOREI 10 $T23
+;ADDI $T22 $T23 $T24
+;STOREI $T24 b
+;WRITEI b
+;STOREI 0 $T25
+;STOREI 10 $T26
+;SUBI $T25 $T26 $T27
+;STOREI $T27 c
+;WRITEI c
+;STOREF 1.0 $T28
+;STOREF $T28 x
+;STOREF 2.0 $T29
+;STOREF $T29 y
+;STOREF 3.14159 $T30
+;STOREF $T30 z
+;WRITEF x
+;WRITEF z
+;WRITEF y
+;STOREF 2.0 $T31
+;DIVF z $T31 $T32
+;STOREF $T32 x
+;DIVF z y $T33
+;STOREF $T33 y
+;WRITEF x
+;WRITEF y
+;ADDF x y $T34
+;ADDF $T34 z $T35
+;DIVF $T35 z $T36
+;STOREF $T36 t
+;WRITEF t
+;MULTF t t $T37
+;STOREF $T37 t
+;WRITEF t
+;ADDF t z $T38
+;ADDF $T38 t $T39
+;STOREF 2.0 $T40
+;DIVF t $T40 $T41
+;ADDF $T39 $T41 $T42
+;STOREF 4.0 $T43
+;DIVF z $T43 $T44
+;ADDF $T42 $T44 $T45
+;STOREF 5.0 $T46
+;DIVF z $T46 $T47
+;ADDF $T45 $T47 $T48
+;STOREF 6.0 $T49
+;DIVF z $T49 $T50
+;ADDF $T48 $T50 $T51
+;STOREF 7.0 $T52
+;DIVF z $T52 $T53
+;ADDF $T51 $T53 $T54
+;STOREF $T54 t
+;WRITEF t
+;RET 
+
+;tiny code
+var a
+var b
+var c
+var d
+var x
+var y
+var z
+var t
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;-----------------------------used for debug-----------------------
+
+;DirtySet
+;LiveSet
+;End Of Block
+;LABEL main
+;-----------------------------label main
+
+;DirtySet
+;LiveSet
+;LINK 
+;-----------------------------link 54
+
+;DirtySet
+;LiveSet;$T1,
+;REG MAP  $T1: r3
+;REMOVE $T1
+;Reg Map$T1 r3
+;IREND SPILLING $T1
+;STOREI 1 $T1
+;-----------------------------move 1 r3
+;r3->$T1, 
+;DirtySet;$T1,
+;LiveSet;a,
+;REG MAP  a: r2
+;REMOVE a
+;Reg Mapa r2
+;IREND SPILLING $T1
+;LIVE
+;Dirty
+;REMOVE $T1
+;IREND SPILLING a
+;STOREI $T1 a
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-1
+;r2->a, 
+;DirtySet;a,
+;LiveSet;a,;$T2,
+;REG MAP  $T2: r3
+;REMOVE $T2
+;Reg Map$T2 r3
+;IREND SPILLING a
+;IREND SPILLING $T2
+;STOREI 2 $T2
+;-----------------------------move 2 r3
+;r2->a, ;r3->$T2, 
+;DirtySet;a,;$T2,
+;LiveSet;a,;b,
+;REG MAP  b: r1
+;REMOVE b
+;Reg Mapb r1
+;IREND SPILLING a
+;IREND SPILLING $T2
+;LIVE
+;Dirty
+;REMOVE $T2
+;IREND SPILLING b
+;STOREI $T2 b
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-2
+;r2->a, ;r1->b, 
+;DirtySet;a,;b,
+;LiveSet;a,;b,;$T3,
+;REG MAP  $T3: r3
+;REMOVE $T3
+;Reg Map$T3 r3
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T3
+;STOREI 10 $T3
+;-----------------------------move 10 r3
+;r2->a, ;r1->b, ;r3->$T3, 
+;DirtySet;a,;b,;$T3,
+;LiveSet;a,;b,;c,
+;REG MAP  c: r0
+;REMOVE c
+;Reg Mapc r0
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T3
+;LIVE
+;Dirty
+;REMOVE $T3
+;IREND SPILLING c
+;STOREI $T3 c
+;-----------------------------move r3 r0
+;-----------------------------move r3 $-3
+;r2->a, ;r1->b, ;r0->c, 
+;DirtySet;a,;b,;c,
+;LiveSet;a,;b,;c,;$T4,
+;REG MAP  $T4: r3
+;REMOVE $T4
+;Reg Map$T4 r3
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING $T4
+;STOREI 20 $T4
+;-----------------------------move 20 r3
+;r2->a, ;r1->b, ;r0->c, ;r3->$T4, 
+;DirtySet;a,;b,;c,;$T4,
+;LiveSet;a,;b,;c,;d,
+;REG MAP  d: r0
+;Dirty REMOVE c
+;REMOVE c
+;REMOVE d
+;Reg Mapd r0
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T4
+;LIVE
+;Dirty
+;REMOVE $T4
+;IREND SPILLING d
+;STOREI $T4 d
+;-----------------------------move r0 c
+;-----------------------------move r3 r0
+;-----------------------------move r3 $-4
+;r2->a, ;r1->b, ;r0->d, 
+;DirtySet;a,;b,;d,
+;LiveSet;a,;b,;c,;d,
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING d
+;WRITEI a
+;-----------------------------sys writei r2
+;r2->a, ;r1->b, ;r0->d, 
+;DirtySet;a,;b,;d,
+;LiveSet;a,;b,;c,;d,
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING d
+;WRITEI b
+;-----------------------------sys writei r1
+;r2->a, ;r1->b, ;r0->d, 
+;DirtySet;a,;b,;d,
+;LiveSet;a,;b,;c,;d,
+;REG MAP  c: r3
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;WRITEI c
+;-----------------------------move c r3
+;-----------------------------sys writei r3
+;r2->a, ;r1->b, ;r3->c, ;r0->d, 
+;DirtySet;a,;b,;d,
+;LiveSet;a,;b,;c,;d,
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;WRITEI d
+;-----------------------------sys writei r0
+;r2->a, ;r1->b, ;r3->c, ;r0->d, 
+;DirtySet;a,;b,;d,
+;LiveSet;c,;d,;$T5,
+;REMOVE a
+;IREND SPILLING b
+;LIVE
+;Dirty
+;REMOVE b
+;IREND SPILLING c
+;IREND SPILLING d
+;IREND SPILLING $T5
+;ADDI a b $T5
+;-----------------------------move r2 a
+;-----------------------------addi r1 r2
+;-----------------------------move r1 b
+;r3->c, ;r0->d, ;r2->$T5, 
+;DirtySet;d,
+;LiveSet;a,;c,;d,
+;REG MAP  a: r1
+;REMOVE a
+;Reg Mapa r1
+;IREND SPILLING a
+;IREND SPILLING c
+;IREND SPILLING d
+;IREND SPILLING $T5
+;LIVE
+;Dirty
+;REMOVE $T5
+;STOREI $T5 a
+;-----------------------------move r2 r1
+;-----------------------------move r2 $-5
+;r1->a, ;r3->c, ;r0->d, 
+;DirtySet;a,;d,
+;LiveSet;a,;c,;d,
+;IREND SPILLING a
+;IREND SPILLING c
+;IREND SPILLING d
+;WRITEI a
+;-----------------------------sys writei r1
+;r1->a, ;r3->c, ;r0->d, 
+;DirtySet;a,;d,
+;LiveSet;a,;d,;$T6,
+;REMOVE a
+;IREND SPILLING c
+;LIVE
+;REMOVE c
+;IREND SPILLING d
+;IREND SPILLING $T6
+;MULTI a c $T6
+;-----------------------------move r1 a
+;-----------------------------muli r3 r1
+;r0->d, ;r1->$T6, 
+;DirtySet;d,
+;LiveSet;a,;b,;d,
+;REG MAP  b: r3
+;REMOVE b
+;Reg Mapb r3
+;IREND SPILLING b
+;IREND SPILLING d
+;IREND SPILLING $T6
+;LIVE
+;Dirty
+;REMOVE $T6
+;STOREI $T6 b
+;-----------------------------move r1 r3
+;-----------------------------move r1 $-6
+;r3->b, ;r0->d, 
+;DirtySet;b,;d,
+;LiveSet;a,;b,;d,
+;IREND SPILLING b
+;IREND SPILLING d
+;WRITEI b
+;-----------------------------sys writei r3
+;r3->b, ;r0->d, 
+;DirtySet;b,;d,
+;LiveSet;a,;b,;d,;$T7,
+;REG MAP  $T7: r2
+;REMOVE $T7
+;Reg Map$T7 r2
+;IREND SPILLING b
+;IREND SPILLING d
+;IREND SPILLING $T7
+;STOREI 0 $T7
+;-----------------------------move 0 r2
+;r3->b, ;r0->d, ;r2->$T7, 
+;DirtySet;b,;d,;$T7,
+;LiveSet;a,;b,;d,;$T8,
+;REG MAP  a: r1
+;REMOVE $T7
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING d
+;IREND SPILLING $T8
+;SUBI $T7 a $T8
+;-----------------------------move a r1
+;-----------------------------move r2 $-7
+;-----------------------------subi r1 r2
+;r1->a, ;r3->b, ;r0->d, ;r2->$T8, 
+;DirtySet;b,;d,
+;LiveSet;a,;b,;d,;$T9,
+;REMOVE $T8
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING d
+;IREND SPILLING $T9
+;ADDI $T8 b $T9
+;-----------------------------move r2 $-8
+;-----------------------------addi r3 r2
+;r1->a, ;r3->b, ;r0->d, ;r2->$T9, 
+;DirtySet;b,;d,
+;LiveSet;a,;b,;c,;d,
+;HIHI2
+;REMOVE a
+;REG MAP  c: r1
+;REMOVE c
+;Reg Mapc r1
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;IREND SPILLING $T9
+;LIVE
+;Dirty
+;REMOVE $T9
+;STOREI $T9 c
+;-----------------------------move r2 r1
+;-----------------------------move r2 $-9
+;r3->b, ;r1->c, ;r0->d, 
+;DirtySet;b,;c,;d,
+;LiveSet;a,;b,;c,;d,
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;WRITEI c
+;-----------------------------sys writei r1
+;r3->b, ;r1->c, ;r0->d, 
+;DirtySet;b,;c,;d,
+;LiveSet;a,;b,;c,;d,;$T10,
+;REG MAP  $T10: r2
+;REMOVE $T10
+;Reg Map$T10 r2
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;IREND SPILLING $T10
+;STOREI 0 $T10
+;-----------------------------move 0 r2
+;r3->b, ;r1->c, ;r0->d, ;r2->$T10, 
+;DirtySet;b,;c,;d,;$T10,
+;LiveSet;a,;$T11,;b,;c,
+;REMOVE $T10
+;IREND SPILLING $T11
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;LIVE
+;Dirty
+;REMOVE d
+;SUBI $T10 d $T11
+;-----------------------------move r2 $-10
+;-----------------------------subi r0 r2
+;-----------------------------move r0 d
+;r2->$T11, ;r3->b, ;r1->c, 
+;DirtySet;b,;c,
+;LiveSet;a,;b,;c,;d,
+;REG MAP  d: r0
+;REMOVE d
+;Reg Mapd r0
+;IREND SPILLING $T11
+;LIVE
+;Dirty
+;REMOVE $T11
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;STOREI $T11 d
+;-----------------------------move r2 r0
+;-----------------------------move r2 $-11
+;r3->b, ;r1->c, ;r0->d, 
+;DirtySet;b,;c,;d,
+;LiveSet;a,;b,;c,;d,
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;WRITEI d
+;-----------------------------sys writei r0
+;r3->b, ;r1->c, ;r0->d, 
+;DirtySet;b,;c,;d,
+;LiveSet;$T12,;a,;b,;c,;d,
+;REG MAP  a: r2
+;REMOVE a
+;IREND SPILLING $T12
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING d
+;ADDI a b $T12
+;-----------------------------move a r2
+;-----------------------------addi r3 r2
+;r2->$T12, ;r3->b, ;r1->c, ;r0->d, 
+;DirtySet;b,;c,;d,
+;LiveSet;$T12,;a,;b,;c,;$T13,;d,
+;REMOVE d
+;IREND SPILLING $T12
+;IREND SPILLING b
+;IREND SPILLING c
+;IREND SPILLING $T13
+;ADDI d c $T13
+;-----------------------------move r0 d
+;-----------------------------addi r1 r0
+;r2->$T12, ;r3->b, ;r1->c, ;r0->$T13, 
+;DirtySet;b,;c,
+;LiveSet;a,;b,;$T14,;c,;d,
+;REMOVE $T12
+;REG MAP $T14 r2
+;IREND SPILLING b
+;IREND SPILLING $T14
+;IREND SPILLING c
+;IREND SPILLING $T13
+;LIVE
+;Dirty
+;REMOVE $T13
+;MULTI $T12 $T13 $T14
+;-----------------------------move r2 $-12
+;-----------------------------muli r0 r2
+;-----------------------------move r0 $-13
+;r3->b, ;r2->$T14, ;r1->c, 
+;DirtySet;b,;c,
+;LiveSet;a,;b,;$T14,;c,;d,;$T15,
+;REG MAP  a: r0
+;REMOVE a
+;IREND SPILLING b
+;IREND SPILLING $T14
+;IREND SPILLING c
+;IREND SPILLING $T15
+;ADDI a b $T15
+;-----------------------------move a r0
+;-----------------------------addi r3 r0
+;r3->b, ;r2->$T14, ;r1->c, ;r0->$T15, 
+;DirtySet;b,;c,
+;LiveSet;a,;b,;$T14,;$T16,;d,
+;REMOVE $T15
+;IREND SPILLING b
+;IREND SPILLING $T14
+;IREND SPILLING c
+;LIVE
+;Dirty
+;REMOVE c
+;IREND SPILLING $T16
+;ADDI $T15 c $T16
+;-----------------------------move r0 $-15
+;-----------------------------addi r1 r0
+;-----------------------------move r1 c
+;r3->b, ;r2->$T14, ;r0->$T16, 
+;DirtySet;b,
+;LiveSet;a,;b,;$T14,;$T17,
+;REG MAP  d: r1
+;REMOVE $T16
+;IREND SPILLING b
+;IREND SPILLING $T14
+;IREND SPILLING d
+;LIVE
+;REMOVE d
+;IREND SPILLING $T17
+;ADDI $T16 d $T17
+;-----------------------------move d r1
+;-----------------------------move r0 $-16
+;-----------------------------addi r1 r0
+;r3->b, ;r2->$T14, ;r0->$T17, 
+;DirtySet;b,
+;LiveSet;b,;$T14,;$T18,
+;REG MAP  a: r1
+;REMOVE $T17
+;IREND SPILLING a
+;LIVE
+;REMOVE a
+;IREND SPILLING b
+;IREND SPILLING $T14
+;IREND SPILLING $T18
+;DIVI $T17 a $T18
+;-----------------------------move a r1
+;-----------------------------move r0 $-17
+;-----------------------------divi r1 r0
+;r3->b, ;r2->$T14, ;r0->$T18, 
+;DirtySet;b,
+;LiveSet;b,;$T19,
+;REMOVE $T14
+;REG MAP $T19 r2
+;IREND SPILLING b
+;IREND SPILLING $T18
+;LIVE
+;Dirty
+;REMOVE $T18
+;IREND SPILLING $T19
+;SUBI $T14 $T18 $T19
+;-----------------------------move r2 $-14
+;-----------------------------subi r0 r2
+;-----------------------------move r0 $-18
+;r3->b, ;r2->$T19, 
+;DirtySet;b,
+;LiveSet;a,;b,
+;REG MAP  a: r1
+;REMOVE a
+;Reg Mapa r1
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T19
+;LIVE
+;Dirty
+;REMOVE $T19
+;STOREI $T19 a
+;-----------------------------move r2 r1
+;-----------------------------move r2 $-19
+;r1->a, ;r3->b, 
+;DirtySet;a,;b,
+;LiveSet;a,;b,
+;IREND SPILLING a
+;IREND SPILLING b
+;WRITEI a
+;-----------------------------sys writei r1
+;r1->a, ;r3->b, 
+;DirtySet;a,;b,
+;LiveSet;a,;b,;$T20,
+;REG MAP  $T20: r2
+;REMOVE $T20
+;Reg Map$T20 r2
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T20
+;STOREI 10 $T20
+;-----------------------------move 10 r2
+;r1->a, ;r3->b, ;r2->$T20, 
+;DirtySet;a,;b,;$T20,
+;LiveSet;b,;$T21,
+;REMOVE a
+;IREND SPILLING b
+;IREND SPILLING $T21
+;IREND SPILLING $T20
+;LIVE
+;Dirty
+;REMOVE $T20
+;ADDI a $T20 $T21
+;-----------------------------move r1 a
+;-----------------------------addi r2 r1
+;-----------------------------move r2 $-20
+;r3->b, ;r1->$T21, 
+;DirtySet;b,
+;LiveSet;a,;b,
+;REG MAP  a: r2
+;REMOVE a
+;Reg Mapa r2
+;IREND SPILLING a
+;IREND SPILLING b
+;IREND SPILLING $T21
+;LIVE
+;Dirty
+;REMOVE $T21
+;STOREI $T21 a
+;-----------------------------move r1 r2
+;-----------------------------move r1 $-21
+;r2->a, ;r3->b, 
+;DirtySet;a,;b,
+;LiveSet;a,;b,
+;IREND SPILLING a
+;IREND SPILLING b
+;WRITEI a
+;-----------------------------sys writei r2
+;r2->a, ;r3->b, 
+;DirtySet;a,;b,
+;LiveSet;$T22,
+;REMOVE b
+;IREND SPILLING a
+;LIVE
+;Dirty
+;REMOVE a
+;IREND SPILLING $T22
+;ADDI b a $T22
+;-----------------------------move r3 b
+;-----------------------------addi r2 r3
+;-----------------------------move r2 a
+;r3->$T22, 
+;DirtySet
+;LiveSet;$T23,;$T22,
+;REG MAP  $T23: r2
+;REMOVE $T23
+;Reg Map$T23 r2
+;IREND SPILLING $T23
+;IREND SPILLING $T22
+;STOREI 10 $T23
+;-----------------------------move 10 r2
+;r2->$T23, ;r3->$T22, 
+;DirtySet;$T23,
+;LiveSet;$T24,
+;REMOVE $T22
+;REG MAP $T24 r3
+;IREND SPILLING $T23
+;LIVE
+;Dirty
+;REMOVE $T23
+;IREND SPILLING $T24
+;ADDI $T22 $T23 $T24
+;-----------------------------move r3 $-22
+;-----------------------------addi r2 r3
+;-----------------------------move r2 $-23
+;r3->$T24, 
+;DirtySet
+;LiveSet;b,
+;REG MAP  b: r2
+;REMOVE b
+;Reg Mapb r2
+;IREND SPILLING b
+;IREND SPILLING $T24
+;LIVE
+;Dirty
+;REMOVE $T24
+;STOREI $T24 b
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-24
+;r2->b, 
+;DirtySet;b,
+;LiveSet
+;IREND SPILLING b
+;LIVE
+;Dirty
+;REMOVE b
+;WRITEI b
+;-----------------------------sys writei r2
+;-----------------------------move r2 b
+
+;DirtySet
+;LiveSet;$T25,
+;REG MAP  $T25: r3
+;REMOVE $T25
+;Reg Map$T25 r3
+;IREND SPILLING $T25
+;STOREI 0 $T25
+;-----------------------------move 0 r3
+;r3->$T25, 
+;DirtySet;$T25,
+;LiveSet;$T25,;$T26,
+;REG MAP  $T26: r2
+;REMOVE $T26
+;Reg Map$T26 r2
+;IREND SPILLING $T25
+;IREND SPILLING $T26
+;STOREI 10 $T26
+;-----------------------------move 10 r2
+;r3->$T25, ;r2->$T26, 
+;DirtySet;$T25,;$T26,
+;LiveSet;$T27,
+;REMOVE $T25
+;REG MAP $T27 r3
+;IREND SPILLING $T27
+;IREND SPILLING $T26
+;LIVE
+;Dirty
+;REMOVE $T26
+;SUBI $T25 $T26 $T27
+;-----------------------------move r3 $-25
+;-----------------------------subi r2 r3
+;-----------------------------move r2 $-26
+;r3->$T27, 
+;DirtySet
+;LiveSet;c,
+;REG MAP  c: r2
+;REMOVE c
+;Reg Mapc r2
+;IREND SPILLING c
+;IREND SPILLING $T27
+;LIVE
+;Dirty
+;REMOVE $T27
+;STOREI $T27 c
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-27
+;r2->c, 
+;DirtySet;c,
+;LiveSet
+;IREND SPILLING c
+;LIVE
+;Dirty
+;REMOVE c
+;WRITEI c
+;-----------------------------sys writei r2
+;-----------------------------move r2 c
+
+;DirtySet
+;LiveSet;$T28,
+;REG MAP  $T28: r3
+;REMOVE $T28
+;Reg Map$T28 r3
+;IREND SPILLING $T28
+;STOREF 1.0 $T28
+;-----------------------------move 1.0 r3
+;r3->$T28, 
+;DirtySet;$T28,
+;LiveSet;x,
+;REG MAP  x: r2
+;REMOVE x
+;Reg Mapx r2
+;IREND SPILLING $T28
+;LIVE
+;Dirty
+;REMOVE $T28
+;IREND SPILLING x
+;STOREF $T28 x
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-28
+;r2->x, 
+;DirtySet;x,
+;LiveSet;$T29,;x,
+;REG MAP  $T29: r3
+;REMOVE $T29
+;Reg Map$T29 r3
+;IREND SPILLING $T29
+;IREND SPILLING x
+;STOREF 2.0 $T29
+;-----------------------------move 2.0 r3
+;r3->$T29, ;r2->x, 
+;DirtySet;$T29,;x,
+;LiveSet;x,;y,
+;REG MAP  y: r1
+;REMOVE y
+;Reg Mapy r1
+;IREND SPILLING $T29
+;LIVE
+;Dirty
+;REMOVE $T29
+;IREND SPILLING x
+;IREND SPILLING y
+;STOREF $T29 y
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-29
+;r2->x, ;r1->y, 
+;DirtySet;x,;y,
+;LiveSet;x,;y,;$T30,
+;REG MAP  $T30: r3
+;REMOVE $T30
+;Reg Map$T30 r3
+;IREND SPILLING x
+;IREND SPILLING y
+;IREND SPILLING $T30
+;STOREF 3.14159 $T30
+;-----------------------------move 3.14159 r3
+;r2->x, ;r1->y, ;r3->$T30, 
+;DirtySet;x,;y,;$T30,
+;LiveSet;x,;y,;z,
+;REG MAP  z: r0
+;REMOVE z
+;Reg Mapz r0
+;IREND SPILLING x
+;IREND SPILLING y
+;IREND SPILLING z
+;IREND SPILLING $T30
+;LIVE
+;Dirty
+;REMOVE $T30
+;STOREF $T30 z
+;-----------------------------move r3 r0
+;-----------------------------move r3 $-30
+;r2->x, ;r1->y, ;r0->z, 
+;DirtySet;x,;y,;z,
+;LiveSet;y,;z,
+;IREND SPILLING x
+;LIVE
+;Dirty
+;REMOVE x
+;IREND SPILLING y
+;IREND SPILLING z
+;WRITEF x
+;-----------------------------sys writer r2
+;-----------------------------move r2 x
+;r1->y, ;r0->z, 
+;DirtySet;y,;z,
+;LiveSet;y,;z,
+;IREND SPILLING y
+;IREND SPILLING z
+;WRITEF z
+;-----------------------------sys writer r0
+;r1->y, ;r0->z, 
+;DirtySet;y,;z,
+;LiveSet;y,;z,
+;IREND SPILLING y
+;IREND SPILLING z
+;WRITEF y
+;-----------------------------sys writer r1
+;r1->y, ;r0->z, 
+;DirtySet;y,;z,
+;LiveSet;y,;z,;$T31,
+;REG MAP  $T31: r3
+;REMOVE $T31
+;Reg Map$T31 r3
+;IREND SPILLING y
+;IREND SPILLING z
+;IREND SPILLING $T31
+;STOREF 2.0 $T31
+;-----------------------------move 2.0 r3
+;r1->y, ;r0->z, ;r3->$T31, 
+;DirtySet;y,;z,;$T31,
+;LiveSet;y,;z,;$T32,
+;REMOVE z
+;IREND SPILLING y
+;IREND SPILLING $T32
+;IREND SPILLING $T31
+;LIVE
+;Dirty
+;REMOVE $T31
+;DIVF z $T31 $T32
+;-----------------------------move r0 z
+;-----------------------------divr r3 r0
+;-----------------------------move r3 $-31
+;r1->y, ;r0->$T32, 
+;DirtySet;y,
+;LiveSet;x,;y,;z,
+;REG MAP  x: r3
+;REMOVE x
+;Reg Mapx r3
+;IREND SPILLING x
+;IREND SPILLING y
+;IREND SPILLING $T32
+;LIVE
+;Dirty
+;REMOVE $T32
+;STOREF $T32 x
+;-----------------------------move r0 r3
+;-----------------------------move r0 $-32
+;r3->x, ;r1->y, 
+;DirtySet;x,;y,
+;LiveSet;$T33,;x,;z,
+;REG MAP  z: r2
+;REMOVE z
+;IREND SPILLING $T33
+;IREND SPILLING x
+;IREND SPILLING y
+;LIVE
+;Dirty
+;REMOVE y
+;DIVF z y $T33
+;-----------------------------move z r2
+;-----------------------------divr r1 r2
+;-----------------------------move r1 y
+;r2->$T33, ;r3->x, 
+;DirtySet;x,
+;LiveSet;x,;y,;z,
+;REG MAP  y: r1
+;REMOVE y
+;Reg Mapy r1
+;IREND SPILLING $T33
+;LIVE
+;Dirty
+;REMOVE $T33
+;IREND SPILLING x
+;IREND SPILLING y
+;STOREF $T33 y
+;-----------------------------move r2 r1
+;-----------------------------move r2 $-33
+;r3->x, ;r1->y, 
+;DirtySet;x,;y,
+;LiveSet;x,;y,;z,
+;IREND SPILLING x
+;IREND SPILLING y
+;WRITEF x
+;-----------------------------sys writer r3
+;r3->x, ;r1->y, 
+;DirtySet;x,;y,
+;LiveSet;x,;y,;z,
+;IREND SPILLING x
+;IREND SPILLING y
+;WRITEF y
+;-----------------------------sys writer r1
+;r3->x, ;r1->y, 
+;DirtySet;x,;y,
+;LiveSet;$T34,;z,
+;REMOVE x
+;IREND SPILLING $T34
+;IREND SPILLING y
+;LIVE
+;Dirty
+;REMOVE y
+;ADDF x y $T34
+;-----------------------------move r3 x
+;-----------------------------addr r1 r3
+;-----------------------------move r1 y
+;r3->$T34, 
+;DirtySet
+;LiveSet;$T35,;z,
+;REG MAP  z: r2
+;REMOVE $T34
+;IREND SPILLING $T35
+;IREND SPILLING z
+;ADDF $T34 z $T35
+;-----------------------------move z r2
+;-----------------------------move r3 $-34
+;-----------------------------addr r2 r3
+;r3->$T35, ;r2->z, 
+;DirtySet
+;LiveSet;$T36,;z,
+;REMOVE $T35
+;IREND SPILLING $T36
+;IREND SPILLING z
+;DIVF $T35 z $T36
+;-----------------------------move r3 $-35
+;-----------------------------divr r2 r3
+;r3->$T36, ;r2->z, 
+;DirtySet
+;LiveSet;t,;z,
+;REG MAP  t: r1
+;REMOVE t
+;Reg Mapt r1
+;IREND SPILLING $T36
+;LIVE
+;Dirty
+;REMOVE $T36
+;IREND SPILLING t
+;IREND SPILLING z
+;STOREF $T36 t
+;-----------------------------move r3 r1
+;-----------------------------move r3 $-36
+;r1->t, ;r2->z, 
+;DirtySet;t,
+;LiveSet;t,;z,
+;IREND SPILLING t
+;IREND SPILLING z
+;WRITEF t
+;-----------------------------sys writer r1
+;r1->t, ;r2->z, 
+;DirtySet;t,
+;LiveSet;$T37,;z,
+;REMOVE t
+;IREND SPILLING $T37
+;IREND SPILLING z
+;MULTF t t $T37
+;-----------------------------move r1 t
+;-----------------------------mulr r1 r1
+;r1->$T37, ;r2->z, 
+;DirtySet
+;LiveSet;t,;z,
+;REG MAP  t: r3
+;REMOVE t
+;Reg Mapt r3
+;IREND SPILLING t
+;IREND SPILLING $T37
+;LIVE
+;Dirty
+;REMOVE $T37
+;IREND SPILLING z
+;STOREF $T37 t
+;-----------------------------move r1 r3
+;-----------------------------move r1 $-37
+;r3->t, ;r2->z, 
+;DirtySet;t,
+;LiveSet;t,;z,
+;IREND SPILLING t
+;IREND SPILLING z
+;WRITEF t
+;-----------------------------sys writer r3
+;r3->t, ;r2->z, 
+;DirtySet;t,
+;LiveSet;t,;$T38,;z,
+;REMOVE t
+;IREND SPILLING $T38
+;IREND SPILLING z
+;ADDF t z $T38
+;-----------------------------move r3 t
+;-----------------------------addr r2 r3
+;r3->$T38, ;r2->z, 
+;DirtySet
+;LiveSet;t,;$T39,;z,
+;REG MAP  t: r1
+;REMOVE $T38
+;IREND SPILLING t
+;IREND SPILLING $T39
+;IREND SPILLING z
+;ADDF $T38 t $T39
+;-----------------------------move t r1
+;-----------------------------move r3 $-38
+;-----------------------------addr r1 r3
+;r1->t, ;r3->$T39, ;r2->z, 
+;DirtySet
+;LiveSet;t,;$T39,;z,;$T40,
+;REG MAP  $T40: r0
+;REMOVE $T40
+;Reg Map$T40 r0
+;IREND SPILLING t
+;IREND SPILLING $T39
+;IREND SPILLING z
+;IREND SPILLING $T40
+;STOREF 2.0 $T40
+;-----------------------------move 2.0 r0
+;r1->t, ;r3->$T39, ;r2->z, ;r0->$T40, 
+;DirtySet;$T40,
+;LiveSet;$T39,;z,;$T41,
+;REMOVE t
+;IREND SPILLING $T39
+;IREND SPILLING z
+;IREND SPILLING $T41
+;IREND SPILLING $T40
+;LIVE
+;Dirty
+;REMOVE $T40
+;DIVF t $T40 $T41
+;-----------------------------divr r0 r1
+;-----------------------------move r0 $-40
+;r3->$T39, ;r2->z, ;r1->$T41, 
+;DirtySet
+;LiveSet;z,;$T42,
+;REMOVE $T39
+;REG MAP $T42 r3
+;IREND SPILLING z
+;IREND SPILLING $T41
+;LIVE
+;Dirty
+;REMOVE $T41
+;IREND SPILLING $T42
+;ADDF $T39 $T41 $T42
+;-----------------------------move r3 $-39
+;-----------------------------addr r1 r3
+;-----------------------------move r1 $-41
+;r2->z, ;r3->$T42, 
+;DirtySet
+;LiveSet;z,;$T43,;$T42,
+;REG MAP  $T43: r1
+;REMOVE $T43
+;Reg Map$T43 r1
+;IREND SPILLING z
+;IREND SPILLING $T43
+;IREND SPILLING $T42
+;STOREF 4.0 $T43
+;-----------------------------move 4.0 r1
+;r2->z, ;r1->$T43, ;r3->$T42, 
+;DirtySet;$T43,
+;LiveSet;$T44,;z,;$T42,
+;REMOVE z
+;IREND SPILLING $T44
+;IREND SPILLING $T43
+;LIVE
+;Dirty
+;REMOVE $T43
+;IREND SPILLING $T42
+;DIVF z $T43 $T44
+;-----------------------------divr r1 r2
+;-----------------------------move r1 $-43
+;r2->$T44, ;r3->$T42, 
+;DirtySet
+;LiveSet;$T45,;z,
+;REMOVE $T42
+;REG MAP $T45 r3
+;IREND SPILLING $T45
+;IREND SPILLING $T44
+;LIVE
+;Dirty
+;REMOVE $T44
+;ADDF $T42 $T44 $T45
+;-----------------------------move r3 $-42
+;-----------------------------addr r2 r3
+;-----------------------------move r2 $-44
+;r3->$T45, 
+;DirtySet
+;LiveSet;$T45,;$T46,;z,
+;REG MAP  $T46: r2
+;REMOVE $T46
+;Reg Map$T46 r2
+;IREND SPILLING $T45
+;IREND SPILLING $T46
+;STOREF 5.0 $T46
+;-----------------------------move 5.0 r2
+;r3->$T45, ;r2->$T46, 
+;DirtySet;$T46,
+;LiveSet;$T45,;$T47,;z,
+;REG MAP  z: r1
+;REMOVE z
+;IREND SPILLING $T45
+;IREND SPILLING $T47
+;IREND SPILLING $T46
+;LIVE
+;Dirty
+;REMOVE $T46
+;DIVF z $T46 $T47
+;-----------------------------move z r1
+;-----------------------------divr r2 r1
+;-----------------------------move r2 $-46
+;r3->$T45, ;r1->$T47, 
+;DirtySet
+;LiveSet;$T48,;z,
+;REMOVE $T45
+;REG MAP $T48 r3
+;IREND SPILLING $T47
+;LIVE
+;Dirty
+;REMOVE $T47
+;IREND SPILLING $T48
+;ADDF $T45 $T47 $T48
+;-----------------------------move r3 $-45
+;-----------------------------addr r1 r3
+;-----------------------------move r1 $-47
+;r3->$T48, 
+;DirtySet
+;LiveSet;$T49,;$T48,;z,
+;REG MAP  $T49: r2
+;REMOVE $T49
+;Reg Map$T49 r2
+;IREND SPILLING $T49
+;IREND SPILLING $T48
+;STOREF 6.0 $T49
+;-----------------------------move 6.0 r2
+;r2->$T49, ;r3->$T48, 
+;DirtySet;$T49,
+;LiveSet;$T48,;z,;$T50,
+;REG MAP  z: r1
+;REMOVE z
+;IREND SPILLING $T49
+;LIVE
+;Dirty
+;REMOVE $T49
+;IREND SPILLING $T48
+;IREND SPILLING $T50
+;DIVF z $T49 $T50
+;-----------------------------move z r1
+;-----------------------------divr r2 r1
+;-----------------------------move r2 $-49
+;r3->$T48, ;r1->$T50, 
+;DirtySet
+;LiveSet;z,;$T51,
+;REMOVE $T48
+;REG MAP $T51 r3
+;IREND SPILLING $T50
+;LIVE
+;Dirty
+;REMOVE $T50
+;IREND SPILLING $T51
+;ADDF $T48 $T50 $T51
+;-----------------------------move r3 $-48
+;-----------------------------addr r1 r3
+;-----------------------------move r1 $-50
+;r3->$T51, 
+;DirtySet
+;LiveSet;z,;$T52,;$T51,
+;REG MAP  $T52: r2
+;REMOVE $T52
+;Reg Map$T52 r2
+;IREND SPILLING $T52
+;IREND SPILLING $T51
+;STOREF 7.0 $T52
+;-----------------------------move 7.0 r2
+;r2->$T52, ;r3->$T51, 
+;DirtySet;$T52,
+;LiveSet;$T51,;$T53,
+;REG MAP  z: r1
+;REMOVE z
+;IREND SPILLING $T52
+;LIVE
+;Dirty
+;REMOVE $T52
+;IREND SPILLING $T51
+;IREND SPILLING $T53
+;DIVF z $T52 $T53
+;-----------------------------move z r1
+;-----------------------------divr r2 r1
+;-----------------------------move r2 $-52
+;r3->$T51, ;r1->$T53, 
+;DirtySet
+;LiveSet;$T54,
+;REMOVE $T51
+;REG MAP $T54 r3
+;IREND SPILLING $T54
+;IREND SPILLING $T53
+;LIVE
+;Dirty
+;REMOVE $T53
+;ADDF $T51 $T53 $T54
+;-----------------------------move r3 $-51
+;-----------------------------addr r1 r3
+;-----------------------------move r1 $-53
+;r3->$T54, 
+;DirtySet
+;LiveSet;t,
+;REG MAP  t: r2
+;REMOVE t
+;Reg Mapt r2
+;IREND SPILLING t
+;IREND SPILLING $T54
+;LIVE
+;Dirty
+;REMOVE $T54
+;STOREF $T54 t
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-54
+;r2->t, 
+;DirtySet;t,
+;LiveSet
+;IREND SPILLING t
+;LIVE
+;Dirty
+;REMOVE t
+;WRITEF t
+;-----------------------------sys writer r2
+;-----------------------------move r2 t
+
+;DirtySet
+;LiveSet
+;RET 
+;-----------------------------unlnk
+;-----------------------------ret
+;-----------------------------used for debug-----------------------
+label main
+link 54
+move 1 r3
+move r3 r2
+move r3 $-1
+move 2 r3
+move r3 r1
+move r3 $-2
+move 10 r3
+move r3 r0
+move r3 $-3
+move 20 r3
+move r0 c
+move r3 r0
+move r3 $-4
+sys writei r2
+sys writei r1
+move c r3
+sys writei r3
+sys writei r0
+move r2 a
+addi r1 r2
+move r1 b
+move r2 r1
+move r2 $-5
+sys writei r1
+move r1 a
+muli r3 r1
+move r1 r3
+move r1 $-6
+sys writei r3
+move 0 r2
+move a r1
+move r2 $-7
+subi r1 r2
+move r2 $-8
+addi r3 r2
+move r2 r1
+move r2 $-9
+sys writei r1
+move 0 r2
+move r2 $-10
+subi r0 r2
+move r0 d
+move r2 r0
+move r2 $-11
+sys writei r0
+move a r2
+addi r3 r2
+move r0 d
+addi r1 r0
+move r2 $-12
+muli r0 r2
+move r0 $-13
+move a r0
+addi r3 r0
+move r0 $-15
+addi r1 r0
+move r1 c
+move d r1
+move r0 $-16
+addi r1 r0
+move a r1
+move r0 $-17
+divi r1 r0
+move r2 $-14
+subi r0 r2
+move r0 $-18
+move r2 r1
+move r2 $-19
+sys writei r1
+move 10 r2
+move r1 a
+addi r2 r1
+move r2 $-20
+move r1 r2
+move r1 $-21
+sys writei r2
+move r3 b
+addi r2 r3
+move r2 a
+move 10 r2
+move r3 $-22
+addi r2 r3
+move r2 $-23
+move r3 r2
+move r3 $-24
+sys writei r2
+move r2 b
+move 0 r3
+move 10 r2
+move r3 $-25
+subi r2 r3
+move r2 $-26
+move r3 r2
+move r3 $-27
+sys writei r2
+move r2 c
+move 1.0 r3
+move r3 r2
+move r3 $-28
+move 2.0 r3
+move r3 r1
+move r3 $-29
+move 3.14159 r3
+move r3 r0
+move r3 $-30
+sys writer r2
+move r2 x
+sys writer r0
+sys writer r1
+move 2.0 r3
+move r0 z
+divr r3 r0
+move r3 $-31
+move r0 r3
+move r0 $-32
+move z r2
+divr r1 r2
+move r1 y
+move r2 r1
+move r2 $-33
+sys writer r3
+sys writer r1
+move r3 x
+addr r1 r3
+move r1 y
+move z r2
+move r3 $-34
+addr r2 r3
+move r3 $-35
+divr r2 r3
+move r3 r1
+move r3 $-36
+sys writer r1
+move r1 t
+mulr r1 r1
+move r1 r3
+move r1 $-37
+sys writer r3
+move r3 t
+addr r2 r3
+move t r1
+move r3 $-38
+addr r1 r3
+move 2.0 r0
+divr r0 r1
+move r0 $-40
+move r3 $-39
+addr r1 r3
+move r1 $-41
+move 4.0 r1
+divr r1 r2
+move r1 $-43
+move r3 $-42
+addr r2 r3
+move r2 $-44
+move 5.0 r2
+move z r1
+divr r2 r1
+move r2 $-46
+move r3 $-45
+addr r1 r3
+move r1 $-47
+move 6.0 r2
+move z r1
+divr r2 r1
+move r2 $-49
+move r3 $-48
+addr r1 r3
+move r1 $-50
+move 7.0 r2
+move z r1
+divr r2 r1
+move r2 $-52
+move r3 $-51
+addr r1 r3
+move r1 $-53
+move r3 r2
+move r3 $-54
+sys writer r2
+move r2 t
+unlnk
+ret
+end

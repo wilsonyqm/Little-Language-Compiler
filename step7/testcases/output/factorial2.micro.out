@@ -1,0 +1,685 @@
+;IR code
+;LABEL factorial
+;LINK 
+;STOREI 1 $T1
+;NE $P1 $T1 label1
+;STOREI 1 $T2
+;STOREI $T2 $R
+;RET 
+;JUMP label2
+;LABEL label1
+;STOREI 1 $T3
+;SUBI $P1 $T3 $T4
+;PUSH 
+;PUSH $T4
+;JSR factorial
+;POP 
+;POP $T5
+;STOREI $T5 $L2
+;MULTI $L2 $P1 $T6
+;STOREI $T6 $L1
+;JUMP label2
+;LABEL label2
+;STOREI $L1 $R
+;RET 
+
+;LABEL main
+;LINK 
+;WRITES input
+;READI $L1
+;STOREI 1 $T1
+;NE $L1 $T1 label3
+;STOREI 1 $T2
+;STOREI $T2 $L2
+;JUMP label4
+;LABEL label3
+;STOREI 1 $T3
+;LE $L1 $T3 label5
+;PUSH 
+;PUSH $L1
+;JSR factorial
+;POP 
+;POP $T4
+;STOREI $T4 $L2
+;JUMP label6
+;LABEL label5
+;STOREI 0 $T5
+;STOREI $T5 $L2
+;JUMP label6
+;LABEL label6
+;JUMP label4
+;LABEL label4
+;WRITEI $L2
+;WRITES eol
+;STOREI 0 $T6
+;STOREI $T6 $R
+;RET 
+
+;tiny code
+str input "Please enter an integer number: "
+str eol "\n"
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;-----------------------------used for debug-----------------------
+
+;DirtySet
+;LiveSet;$P1,;$L1,
+;End Of Block
+;LABEL factorial
+;-----------------------------label factorial
+
+;DirtySet
+;LiveSet;$P1,;$L1,
+;LINK 
+;-----------------------------link 8
+
+;DirtySet
+;LiveSet;$T1,;$P1,;$L1,
+;REG MAP  $T1: r3
+;REMOVE $T1
+;Reg Map$T1 r3
+;IREND SPILLING $T1
+;STOREI 1 $T1
+;-----------------------------move 1 r3
+;r3->$T1, 
+;DirtySet;$T1,
+;LiveSet;$P1,;$L1,
+;REG MAP  $P1: r2
+;IREND SPILLING $T1
+;LIVE
+;Dirty
+;REMOVE $T1
+;IREND SPILLING $P1
+;End Of Block
+;IREND SPILLING $P1
+;LIVE
+;REMOVE $P1
+;NE $P1 $T1 label1
+;-----------------------------move $6 r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-3
+;-----------------------------jne label1
+
+;DirtySet
+;LiveSet;$T2,;$L1,
+;REG MAP  $T2: r3
+;REMOVE $T2
+;Reg Map$T2 r3
+;IREND SPILLING $T2
+;STOREI 1 $T2
+;-----------------------------move 1 r3
+;r3->$T2, 
+;DirtySet;$T2,
+;LiveSet;$L1,
+;Reg Map$R $7
+;IREND SPILLING $T2
+;LIVE
+;Dirty
+;REMOVE $T2
+;IREND SPILLING $R
+;LIVE
+;REMOVE $R
+;STOREI $T2 $R
+;-----------------------------move r3 $7
+;-----------------------------move r3 $-4
+
+;DirtySet
+;LiveSet;$L1,
+;RET 
+;-----------------------------unlnk
+;-----------------------------ret
+
+;DirtySet
+;LiveSet;$L1,
+;End Of Block
+;JUMP label2
+;-----------------------------jmp label2
+
+;DirtySet
+;LiveSet;$P1,
+;End Of Block
+;LABEL label1
+;-----------------------------label label1
+
+;DirtySet
+;LiveSet;$T3,;$P1,
+;REG MAP  $T3: r3
+;REMOVE $T3
+;Reg Map$T3 r3
+;IREND SPILLING $T3
+;STOREI 1 $T3
+;-----------------------------move 1 r3
+;r3->$T3, 
+;DirtySet;$T3,
+;LiveSet;$T4,;$P1,
+;REG MAP  $P1: r2
+;REMOVE $P1
+;REG MAP $T4 r2
+;IREND SPILLING $T3
+;LIVE
+;Dirty
+;REMOVE $T3
+;IREND SPILLING $T4
+;SUBI $P1 $T3 $T4
+;-----------------------------move $6 r2
+;-----------------------------subi r3 r2
+;-----------------------------move r3 $-5
+;r2->$T4, 
+;DirtySet
+;LiveSet;$T4,;$P1,
+;IREND SPILLING $T4
+;PUSH 
+;r2->$T4, 
+;DirtySet
+;LiveSet;$P1,
+;IREND SPILLING $T4
+;LIVE
+;Dirty
+;REMOVE $T4
+;PUSH $T4
+;-----------------------------push
+;-----------------------------push r2
+;-----------------------------move r2 $-6
+
+;DirtySet
+;LiveSet;$P1,
+;JSR factorial
+;-----------------------------push r0
+;-----------------------------push r1
+;-----------------------------push r2
+;-----------------------------push r3
+;-----------------------------jsr factorial
+;-----------------------------pop r3
+;-----------------------------pop r2
+;-----------------------------pop r1
+;-----------------------------pop r0
+
+;DirtySet
+;LiveSet;$P1,
+;POP 
+;-----------------------------pop
+
+;DirtySet
+;LiveSet;$P1,;$T5,
+;REG MAP  $T5: r3
+;IREND SPILLING $T5
+;POP $T5
+;-----------------------------pop r3
+;r3->$T5, 
+;DirtySet
+;LiveSet;$P1,;$L2,
+;REG MAP  $L2: r2
+;REMOVE $L2
+;Reg Map$L2 r2
+;IREND SPILLING $T5
+;LIVE
+;Dirty
+;REMOVE $T5
+;IREND SPILLING $L2
+;STOREI $T5 $L2
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-7
+;r2->$L2, 
+;DirtySet;$L2,
+;LiveSet;$T6,
+;REG MAP  $P1: r3
+;REMOVE $L2
+;REG MAP $T6 r2
+;IREND SPILLING $P1
+;LIVE
+;REMOVE $P1
+;IREND SPILLING $T6
+;MULTI $L2 $P1 $T6
+;-----------------------------move $6 r3
+;-----------------------------move r2 $-2
+;-----------------------------muli r3 r2
+;r2->$T6, 
+;DirtySet
+;LiveSet;$L1,
+;REG MAP  $L1: r3
+;REMOVE $L1
+;Reg Map$L1 r3
+;IREND SPILLING $T6
+;LIVE
+;Dirty
+;REMOVE $T6
+;IREND SPILLING $L1
+;STOREI $T6 $L1
+;-----------------------------move r2 r3
+;-----------------------------move r2 $-8
+;r3->$L1, 
+;DirtySet;$L1,
+;LiveSet;$L1,
+;IREND SPILLING $L1
+;End Of Block
+;IREND SPILLING $L1
+;LIVE
+;Dirty
+;REMOVE $L1
+;JUMP label2
+;-----------------------------move r3 $-1
+;-----------------------------jmp label2
+
+;DirtySet
+;LiveSet;$L1,
+;End Of Block
+;LABEL label2
+;-----------------------------label label2
+
+;DirtySet
+;LiveSet
+;REG MAP  $L1: r3
+;Reg Map$R $7
+;IREND SPILLING $L1
+;LIVE
+;REMOVE $L1
+;IREND SPILLING $R
+;LIVE
+;REMOVE $R
+;STOREI $L1 $R
+;-----------------------------move $-1 r3
+;-----------------------------move r3 $7
+
+;DirtySet
+;LiveSet
+;RET 
+;-----------------------------unlnk
+;-----------------------------ret
+;-----------------------------used for debug-----------------------
+label factorial
+link 8
+move 1 r3
+move $6 r2
+cmpi r2 r3
+move r3 $-3
+jne label1
+move 1 r3
+move r3 $7
+move r3 $-4
+unlnk
+ret
+jmp label2
+label label1
+move 1 r3
+move $6 r2
+subi r3 r2
+move r3 $-5
+push
+push r2
+move r2 $-6
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+pop
+pop r3
+move r3 r2
+move r3 $-7
+move $6 r3
+move r2 $-2
+muli r3 r2
+move r2 r3
+move r2 $-8
+move r3 $-1
+jmp label2
+label label2
+move $-1 r3
+move r3 $7
+unlnk
+ret
+;-----------------------------used for debug-----------------------
+
+;DirtySet
+;LiveSet;input,;eol,
+;End Of Block
+;LABEL main
+;-----------------------------label main
+
+;DirtySet
+;LiveSet;input,;eol,
+;LINK 
+;-----------------------------link 8
+
+;DirtySet
+;LiveSet;eol,
+;WRITES input
+;-----------------------------sys writes input
+
+;DirtySet
+;LiveSet;eol,;$L1,
+;REG MAP  $L1: r3
+;IREND SPILLING $L1
+;READI $L1
+;-----------------------------sys readi r3
+;r3->$L1, 
+;DirtySet;$L1,
+;LiveSet;$T1,;eol,;$L1,
+;REG MAP  $T1: r2
+;REMOVE $T1
+;Reg Map$T1 r2
+;IREND SPILLING $T1
+;IREND SPILLING $L1
+;STOREI 1 $T1
+;-----------------------------move 1 r2
+;r2->$T1, ;r3->$L1, 
+;DirtySet;$T1,;$L1,
+;LiveSet;eol,;$L1,
+;IREND SPILLING $T1
+;LIVE
+;Dirty
+;REMOVE $T1
+;IREND SPILLING $L1
+;End Of Block
+;IREND SPILLING $L1
+;LIVE
+;Dirty
+;REMOVE $L1
+;NE $L1 $T1 label3
+;-----------------------------cmpi r3 r2
+;-----------------------------move r2 $-3
+;-----------------------------move r3 $-1
+;-----------------------------jne label3
+
+;DirtySet
+;LiveSet;$T2,;eol,
+;REG MAP  $T2: r3
+;REMOVE $T2
+;Reg Map$T2 r3
+;IREND SPILLING $T2
+;STOREI 1 $T2
+;-----------------------------move 1 r3
+;r3->$T2, 
+;DirtySet;$T2,
+;LiveSet;eol,;$L2,
+;REG MAP  $L2: r2
+;REMOVE $L2
+;Reg Map$L2 r2
+;IREND SPILLING $T2
+;LIVE
+;Dirty
+;REMOVE $T2
+;IREND SPILLING $L2
+;STOREI $T2 $L2
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-4
+;r2->$L2, 
+;DirtySet;$L2,
+;LiveSet;eol,;$L2,
+;IREND SPILLING $L2
+;End Of Block
+;IREND SPILLING $L2
+;LIVE
+;Dirty
+;REMOVE $L2
+;JUMP label4
+;-----------------------------move r2 $-2
+;-----------------------------jmp label4
+
+;DirtySet
+;LiveSet;eol,;$L1,
+;End Of Block
+;LABEL label3
+;-----------------------------label label3
+
+;DirtySet
+;LiveSet;eol,;$T3,;$L1,
+;REG MAP  $T3: r3
+;REMOVE $T3
+;Reg Map$T3 r3
+;IREND SPILLING $T3
+;STOREI 1 $T3
+;-----------------------------move 1 r3
+;r3->$T3, 
+;DirtySet;$T3,
+;LiveSet;eol,;$L1,
+;REG MAP  $L1: r2
+;IREND SPILLING $T3
+;LIVE
+;Dirty
+;REMOVE $T3
+;IREND SPILLING $L1
+;End Of Block
+;IREND SPILLING $L1
+;LIVE
+;REMOVE $L1
+;LE $L1 $T3 label5
+;-----------------------------move $-1 r2
+;-----------------------------cmpi r2 r3
+;-----------------------------move r3 $-5
+;-----------------------------jle label5
+
+;DirtySet
+;LiveSet;eol,;$L1,
+;PUSH 
+
+;DirtySet
+;LiveSet;eol,
+;REG MAP  $L1: r3
+;IREND SPILLING $L1
+;LIVE
+;REMOVE $L1
+;PUSH $L1
+;-----------------------------push
+;-----------------------------move $-1 r3
+;-----------------------------push r3
+
+;DirtySet
+;LiveSet;eol,
+;JSR factorial
+;-----------------------------push r0
+;-----------------------------push r1
+;-----------------------------push r2
+;-----------------------------push r3
+;-----------------------------jsr factorial
+;-----------------------------pop r3
+;-----------------------------pop r2
+;-----------------------------pop r1
+;-----------------------------pop r0
+
+;DirtySet
+;LiveSet;eol,
+;POP 
+;-----------------------------pop
+
+;DirtySet
+;LiveSet;eol,;$T4,
+;REG MAP  $T4: r3
+;IREND SPILLING $T4
+;POP $T4
+;-----------------------------pop r3
+;r3->$T4, 
+;DirtySet
+;LiveSet;eol,;$L2,
+;REG MAP  $L2: r2
+;REMOVE $L2
+;Reg Map$L2 r2
+;IREND SPILLING $T4
+;LIVE
+;Dirty
+;REMOVE $T4
+;IREND SPILLING $L2
+;STOREI $T4 $L2
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-6
+;r2->$L2, 
+;DirtySet;$L2,
+;LiveSet;eol,;$L2,
+;IREND SPILLING $L2
+;End Of Block
+;IREND SPILLING $L2
+;LIVE
+;Dirty
+;REMOVE $L2
+;JUMP label6
+;-----------------------------move r2 $-2
+;-----------------------------jmp label6
+
+;DirtySet
+;LiveSet;eol,
+;End Of Block
+;LABEL label5
+;-----------------------------label label5
+
+;DirtySet
+;LiveSet;eol,;$T5,
+;REG MAP  $T5: r3
+;REMOVE $T5
+;Reg Map$T5 r3
+;IREND SPILLING $T5
+;STOREI 0 $T5
+;-----------------------------move 0 r3
+;r3->$T5, 
+;DirtySet;$T5,
+;LiveSet;eol,;$L2,
+;REG MAP  $L2: r2
+;REMOVE $L2
+;Reg Map$L2 r2
+;IREND SPILLING $T5
+;LIVE
+;Dirty
+;REMOVE $T5
+;IREND SPILLING $L2
+;STOREI $T5 $L2
+;-----------------------------move r3 r2
+;-----------------------------move r3 $-7
+;r2->$L2, 
+;DirtySet;$L2,
+;LiveSet;eol,;$L2,
+;IREND SPILLING $L2
+;End Of Block
+;IREND SPILLING $L2
+;LIVE
+;Dirty
+;REMOVE $L2
+;JUMP label6
+;-----------------------------move r2 $-2
+;-----------------------------jmp label6
+
+;DirtySet
+;LiveSet;eol,;$L2,
+;End Of Block
+;LABEL label6
+;-----------------------------label label6
+
+;DirtySet
+;LiveSet;eol,;$L2,
+;End Of Block
+;JUMP label4
+;-----------------------------jmp label4
+
+;DirtySet
+;LiveSet;eol,;$L2,
+;End Of Block
+;LABEL label4
+;-----------------------------label label4
+
+;DirtySet
+;LiveSet;eol,
+;REG MAP  $L2: r3
+;IREND SPILLING $L2
+;LIVE
+;REMOVE $L2
+;WRITEI $L2
+;-----------------------------move $-2 r3
+;-----------------------------sys writei r3
+
+;DirtySet
+;LiveSet
+;WRITES eol
+;-----------------------------sys writes eol
+
+;DirtySet
+;LiveSet;$T6,
+;REG MAP  $T6: r3
+;REMOVE $T6
+;Reg Map$T6 r3
+;IREND SPILLING $T6
+;STOREI 0 $T6
+;-----------------------------move 0 r3
+;r3->$T6, 
+;DirtySet;$T6,
+;LiveSet
+;Reg Map$R $6
+;IREND SPILLING $T6
+;LIVE
+;Dirty
+;REMOVE $T6
+;IREND SPILLING $R
+;LIVE
+;REMOVE $R
+;STOREI $T6 $R
+;-----------------------------move r3 $6
+;-----------------------------move r3 $-8
+
+;DirtySet
+;LiveSet
+;RET 
+;-----------------------------unlnk
+;-----------------------------ret
+;-----------------------------used for debug-----------------------
+label main
+link 8
+sys writes input
+sys readi r3
+move 1 r2
+cmpi r3 r2
+move r2 $-3
+move r3 $-1
+jne label3
+move 1 r3
+move r3 r2
+move r3 $-4
+move r2 $-2
+jmp label4
+label label3
+move 1 r3
+move $-1 r2
+cmpi r2 r3
+move r3 $-5
+jle label5
+push
+move $-1 r3
+push r3
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+pop
+pop r3
+move r3 r2
+move r3 $-6
+move r2 $-2
+jmp label6
+label label5
+move 0 r3
+move r3 r2
+move r3 $-7
+move r2 $-2
+jmp label6
+label label6
+jmp label4
+label label4
+move $-2 r3
+sys writei r3
+sys writes eol
+move 0 r3
+move r3 $6
+move r3 $-8
+unlnk
+ret
+end
